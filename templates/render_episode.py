@@ -97,7 +97,17 @@ def caption(img, text):
     ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(ov)
     font = F(54, "Bold")
-    lines = wrap(d, text, font, 820)
+    words = text.split()
+    if d.textlength(text, font=font) <= 860 or len(words) < 2:
+        lines = [text]
+    else:  # two balanced lines: pick the break that minimizes the longer line
+        best = None
+        for k in range(1, len(words)):
+            a, b = " ".join(words[:k]), " ".join(words[k:])
+            w_ = max(d.textlength(a, font=font), d.textlength(b, font=font))
+            if best is None or w_ < best[0]:
+                best = (w_, [a, b])
+        lines = best[1]
     lh = 70
     total = lh * len(lines)
     top = 1420 - total / 2
