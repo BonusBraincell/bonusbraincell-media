@@ -16,7 +16,11 @@
     "instagram_url": "https://www.instagram.com/reel/DfzovpmFubI/",
     "instagram_media_id": "18108800804203037",
     "instagram_asset": "video_v2.mp4",
-    "instagram_at": "2026-11-16T10:10:00-05:00"
+    "instagram_at": "2026-11-16T10:10:00-05:00",
+    "youtube": {
+      "url": "https://www.youtube.com/watch?v=6GOf2MCaA8E",
+      "at": "2026-11-16T14:56-05:00"
+    }
   },
   "status": "published"
 }
