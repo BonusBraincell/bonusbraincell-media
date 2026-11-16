@@ -481,7 +481,11 @@ def main():
     timeline, t0 = [], cover_hold
     for i, sc in enumerate(spec["scenes"]):
         wav = os.path.join(work, f"a{i:02}.wav")
-        dur, sr = tts_scene(sc["tts"], voice, speed, wav, kokoro)
+        # Per-scene overrides (Script System v2): "voice" for a second character
+        # (quoted myth, viewer question), "speed" for pacing (0.98-1.14 range).
+        sv = sc.get("voice", voice)
+        ss = max(0.9, min(1.2, float(sc.get("speed", speed))))
+        dur, sr = tts_scene(sc["tts"], sv, ss, wav, kokoro)
         sdur = round((lead + dur + tail) * FPS) / FPS
         timeline.append(dict(i=i, start=t0, dur=sdur, speech=dur, wav=wav))
         t0 += sdur
