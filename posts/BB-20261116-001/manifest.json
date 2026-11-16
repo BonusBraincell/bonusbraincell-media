@@ -1,15 +1,19 @@
 {
   "post_id": "BB-20261116-001",
-  "slot_date": "2026-11-16",
+  "slot_date": "2026-11-15",
   "publish_at_et": "19:30",
   "platform": "instagram_reels",
-  "status": "ready_to_upload",
+  "status": "published",
   "qa_passed": true,
   "video_raw_url": "https://raw.githubusercontent.com/BonusBraincell/bonusbraincell-media/main/posts/BB-20261116-001/video.mp4",
   "cover_raw_url": "https://raw.githubusercontent.com/BonusBraincell/bonusbraincell-media/main/posts/BB-20261116-001/cover.jpg",
   "caption": "The IPO price isn't the price most people pay. \ud83e\udde0\n\nThe night before a company lists, it and its banks set the offer price, and most shares go to big investors who already asked for them. Next morning, the exchange runs an auction. The price where the most shares can trade becomes the opening price. That gap is the IPO pop.\n\nThe one-liner: the offer price is a negotiation. The opening price is an auction.\n\n$20 and $28 are illustrative. The 20% / 11% figures are from a study of Nasdaq IPOs (Aggarwal & Wu). Not financial advice.\n\nFollow @bonusbraincell for one bonus braincell per scroll.\n\n#IPO #stockmarket #investing101 #economics #explained",
   "pinned_comment": "Next one's up to you: who actually takes delivery on an oil futures contract, or why do so many ships fly Panama's flag? \ud83d\udc47",
   "is_ai_generated": true,
-  "package_folder": "Ready to Upload/2026-11-16_BB-20261116-001_who-sets-an-ipos-first-price",
-  "published": null
+  "package_folder": "Published/2026-11-15_BB-20261116-001_who-sets-an-ipos-first-price",
+  "published": {
+    "instagram_url": "https://www.instagram.com/reel/DfyV670pbAL/",
+    "instagram_media_id": "17976162264176539",
+    "at": "2026-11-15T22:05:00-05:00"
+  }
 }
