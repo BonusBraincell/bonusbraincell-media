@@ -398,9 +398,43 @@ def v_negative(img, d, t, p):
     if p.get("source"):
         note(d, p["source"], 1275)
 
+def v_relay(img, d, t, p):
+    """Message relay down a chain of boxes (e.g. store -> network -> bank). A packet travels
+    down (and optionally back up). params: kicker, nodes [labels], packet, back (label or null), note."""
+    d.text((540, 430), p["kicker"], font=F(40, "Bold"), fill=YELLOW, anchor="mm")
+    nodes = p["nodes"]; n = len(nodes)
+    top, gap, bh = 510, 22, 120
+    step = bh + gap
+    ys = [top + k * step for k in range(n)]
+    hl = p.get("highlight", [])
+    for k, (lab, y) in enumerate(zip(nodes, ys)):
+        a = appear(t, 0.05 + k * 0.25)
+        on = k in hl
+        fill = blend(NAVY, YELLOW if on else NAVY2, a)
+        d.rounded_rectangle([300, y, 900, y + bh], radius=26, fill=fill, outline=blend(NAVY, WHITE, a * (0 if on else 0.6)), width=3)
+        d.text((600, y + bh / 2), lab, font=F(44, "Bold"), fill=blend(fill, NAVY if on else WHITE, a), anchor="mm")
+        if k < n - 1:
+            d.line([190, y + bh / 2 + 18, 190, ys[k + 1] + bh / 2 - 18], fill=blend(NAVY, MUTED, a), width=5)
+    # packet position: down during first leg, back up during second leg
+    travel = 0.9 * (n - 1) * 0.55
+    t1 = max(0.0, t - 0.6)
+    yc0, yc1 = ys[0] + bh / 2, ys[-1] + bh / 2
+    if t1 <= travel:
+        y = yc0 + (yc1 - yc0) * ease(min(1, t1 / travel)); lab = p["packet"]; col = YELLOW
+    elif p.get("back") and t1 > travel + 0.5:
+        u = min(1, (t1 - travel - 0.5) / travel)
+        y = yc1 + (yc0 - yc1) * ease(u); lab = p["back"]; col = WHITE
+    else:
+        y = yc1; lab = p["packet"]; col = YELLOW
+    w = min(200, max(110, int(d.textlength(lab, font=F(30, "ExtraBold"))) + 36))
+    d.rounded_rectangle([190 - w / 2, y - 32, 190 + w / 2, y + 32], radius=32, fill=col)
+    d.text((190, y), lab, font=F(30, "ExtraBold"), fill=NAVY, anchor="mm")
+    if p.get("note"):
+        note(d, p["note"], 1250)
+
 VISUALS = dict(hook=v_hook, offer=v_offer, rows=v_rows, alloc=v_alloc, clock=v_clock,
                auction=v_auction, pop=v_pop, bars=v_bars, payoff=v_payoff, cta=v_cta,
-               card=v_card, mappin=v_mappin, tiles=v_tiles, converge=v_converge, negative=v_negative)
+               card=v_card, mappin=v_mappin, tiles=v_tiles, converge=v_converge, negative=v_negative, relay=v_relay)
 
 # ---------- audio ----------
 def tts_scene(text, voice, speed, path, kokoro):
@@ -413,7 +447,8 @@ def tts_scene(text, voice, speed, path, kokoro):
 
 STOP_END = {"a", "an", "the", "at", "of", "to", "in", "on", "for", "and", "or", "but", "by", "with",
             "from", "per", "as", "is", "are", "was", "that", "this", "its", "your", "their", "into", "who",
-            "have", "has", "had", "be", "can", "will", "would", "were", "my", "our"}
+            "have", "has", "had", "be", "can", "will", "would", "were", "my", "our",
+            "you", "what", "than", "when", "where", "if", "so", "it", "they", "we"}
 
 def chunk_caption(text, maxc=42):
     """Caption chunks follow sentences and clauses (up to two lines on screen).
@@ -442,7 +477,7 @@ def chunk_caption(text, maxc=42):
             if len(" ".join(rest)) < 12 and len(" ".join(cur + rest)) <= maxc + 10:
                 continue  # finish the short clause on this chunk instead of orphaning it
             moved = []
-            while len(cur) > 1 and cur[-1].lower().strip(",.") in STOP_END:
+            while len(cur) > 1 and (cur[-1].lower().strip(",.") in STOP_END or cur[-1].lower().endswith("'s")):
                 moved.insert(0, cur.pop())
             chunks.append(" ".join(cur)); cur = moved
     if cur:

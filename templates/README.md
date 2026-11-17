@@ -20,7 +20,7 @@
 Also needs ffmpeg, Pillow, numpy and the Inter font (all present in the Claude cloud workspace on 2026-11-15).
 
 ## Visual types available in the renderer
-`hook` (title + two tags) · `offer` (two boxes → tag) · `rows` (table rows; optional `note`) · `alloc` (tile grid split) · `clock` (clock + order bin) · `auction` (two crossing curves) · `pop` (tag → tag + big %) · `bars` (two stat bars + source) · `payoff` (two-line takeaway) · `cta` (logo + line) · `card` (one big card: header, giant value, sub, optional note) · `mappin` (pipelines converging on a hub pin + tanks; label, sub) · `tiles` (100 tiles, 99 fade, 1 stays; big line, source) · `converge` (two price lines meeting at expiration; l1, l2, end_label, note) · `negative` (price line falling through $0; value, label, source). Added 2026-11-16. New visual types get added to `VISUALS` in `render_episode.py`; keep the navy/yellow palette and the same chrome and caption style.
+`hook` (title + two tags) · `offer` (two boxes → tag) · `rows` (table rows; optional `note`) · `alloc` (tile grid split) · `clock` (clock + order bin) · `auction` (two crossing curves) · `pop` (tag → tag + big %) · `bars` (two stat bars + source) · `payoff` (two-line takeaway) · `cta` (logo + line) · `card` (one big card: header, giant value, sub, optional note) · `mappin` (pipelines converging on a hub pin + tanks; label, sub) · `tiles` (100 tiles, 99 fade, 1 stays; big line, source) · `converge` (two price lines meeting at expiration; l1, l2, end_label, note) · `negative` (price line falling through $0; value, label, source). Added 2026-11-16. `relay` (a message/packet travelling down a chain of boxes, optionally coming back: kicker, nodes, packet, back, highlight, note; added 2026-11-17). New visual types get added to `VISUALS` in `render_episode.py`; keep the navy/yellow palette and the same chrome and caption style.
 
 ## House format (every video)
 - 1080×1920, 30 fps, H.264 + AAC, loudness −14 LUFS, **65–90 s (must be over 60 s for TikTok Creator Rewards)**. About 175–230 narrated words at the house voice speed.
@@ -32,7 +32,7 @@ Also needs ffmpeg, Pillow, numpy and the Inter font (all present in the Claude c
 
 
 ## Caption chunking (Nov 16)
-Burned-in captions follow sentences and clauses, up to two lines (~42 characters, max ~56), never split abbreviations like U.S., never end on a weak word (at, the, of…), and never leave a one-word orphan.
+Burned-in captions follow sentences and clauses, up to two lines (~42 characters, max ~56), never split abbreviations like U.S., never end on a weak word (at, the, of, you, than, what…) or a possessive ("store's"), and never leave a one-word orphan.
 
 ## Voice variation (Script System v2, Nov 16)
 The host voice stays `af_heart` (brand recognition). Variety comes from three levers, set per scene in the episode spec:
