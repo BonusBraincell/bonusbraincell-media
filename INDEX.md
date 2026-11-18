@@ -13,7 +13,9 @@ One row per episode, grouped by series. The daily task appends each new episode 
 (no episodes yet)
 
 ## The Fine Print
-(no episodes yet)
+| Date | Episode | Instagram | TikTok | YouTube |
+|---|---|---|---|---|
+| 2026-11-18 | Why does the U.S. have time zones? | https://www.instagram.com/reel/Df4402vszMQ/ | https://www.tiktok.com/@bonusbraincell/video/7709542237566274829 | https://www.youtube.com/watch?v=_58x8DHgYeY |
 
 ## You Asked
 (no episodes yet)
