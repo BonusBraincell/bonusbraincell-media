@@ -137,6 +137,8 @@ def v_hook(img, d, t, p):
     tag(d, 780, 900, p["l2"], p["v2"], a2, False, 380)
     if p.get("between", "≠"):
         d.text((540, 900), p.get("between", "≠"), font=F(120, "ExtraBold"), fill=YELLOW, anchor="mm")
+    if p.get("note"):
+        note(d, p["note"], 1120)
 
 def v_offer(img, d, t, p):
     d.text((540, 430), p["kicker"], font=F(40, "Bold"), fill=YELLOW, anchor="mm")
@@ -432,9 +434,83 @@ def v_relay(img, d, t, p):
     if p.get("note"):
         note(d, p["note"], 1250)
 
+def v_sunpath(img, d, t, p):
+    """Sun crosses a row of towns; each town's own noon lights up as the sun passes overhead.
+    params: kicker, towns [labels], label (under the row), note."""
+    d.text((540, 430), p["kicker"], font=F(40, "Bold"), fill=YELLOW, anchor="mm")
+    towns = p["towns"]; n = len(towns)
+    xs = [200 + k * (680 / max(1, n - 1)) for k in range(n)]
+    base = 1010
+    d.arc([120, 560, 960, 1400], 180, 360, fill=MUTED, width=4)
+    u = (t * 0.32) % 1.0
+    sx = 150 + 780 * u
+    sy = 980 - 400 * math.sin(math.pi * u)
+    d.ellipse([sx - 58, sy - 58, sx + 58, sy + 58], fill=YELLOW)
+    d.line([110, base, 970, base], fill=WHITE, width=5)
+    for x, lab in zip(xs, towns):
+        on = abs(sx - x) < 90
+        col = YELLOW if on else WHITE
+        d.rectangle([x - 46, base - 80, x + 46, base], fill=col)
+        d.polygon([(x - 60, base - 80), (x, base - 134), (x + 60, base - 80)], fill=col)
+        d.text((x, base + 44), lab, font=F(34, "Bold"), fill=WHITE, anchor="mm")
+        d.text((x, base + 96), "NOON" if on else " ", font=F(38, "ExtraBold"), fill=YELLOW, anchor="mm")
+    if p.get("label"):
+        d.text((540, 1200), p["label"], font=F(46, "Bold"), fill=WHITE, anchor="mm")
+    if p.get("note"):
+        note(d, p["note"], 1262)
+
+def v_zones(img, d, t, p):
+    """Vertical bands snapping into place, west to east. params: kicker, bands [labels], big, note."""
+    d.text((540, 430), p["kicker"], font=F(40, "Bold"), fill=YELLOW, anchor="mm")
+    bands = p["bands"]; n = len(bands)
+    x0, x1, y0, y1 = 110, 970, 540, 1050
+    bw = (x1 - x0) / n
+    for k, lab in enumerate(bands):
+        a = appear(t, 0.2 + k * 0.4, 0.35)
+        drop = (1 - a) * 90
+        col = YELLOW if k % 2 else NAVY2
+        tc = NAVY if k % 2 else WHITE
+        fill = blend(NAVY, col, a)
+        d.rectangle([x0 + k * bw + 5, y0 - drop, x0 + (k + 1) * bw - 5, y1 - drop], fill=fill, outline=blend(NAVY, WHITE, a * 0.5), width=2)
+        fs = 30
+        while d.textlength(lab, font=F(fs, "ExtraBold")) > bw - 18 and fs > 20:
+            fs -= 1
+        d.text((x0 + (k + .5) * bw, (y0 + y1) / 2 - drop), lab, font=F(fs, "ExtraBold"), fill=blend(fill, tc, a), anchor="mm")
+    a = appear(t, 0.3 + n * 0.4)
+    d.text((540, 1140), p["big"], font=F(64, "ExtraBold"), fill=blend(NAVY, YELLOW, a), anchor="mm")
+    if p.get("note"):
+        note(d, p["note"], 1235)
+
+def v_noonclock(img, d, t, p):
+    """Clock reaches 12, is set back, and reaches 12 again. params: kicker, first, back, second, note."""
+    d.text((540, 430), p["kicker"], font=F(40, "Bold"), fill=YELLOW, anchor="mm")
+    cx, cy, r = 540, 810, 270
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=NAVY2, outline=WHITE, width=10)
+    for k in range(12):
+        ang = math.radians(k * 30)
+        d.line([cx + (r - 38) * math.sin(ang), cy - (r - 38) * math.cos(ang), cx + (r - 14) * math.sin(ang), cy - (r - 14) * math.cos(ang)], fill=WHITE, width=7)
+    d1, d2, d3 = float(p.get("t1", 2.2)), float(p.get("t2", 1.1)), float(p.get("t3", 2.2))
+    back = 40.0  # drawn offset in degrees of the minute hand, schematic only
+    if t < d1:
+        m = -back * (1 - ease(t / d1)); lab = p["first"]
+    elif t < d1 + d2:
+        m = -back * ease((t - d1) / d2); lab = p["back"]
+    elif t < d1 + d2 + d3:
+        m = -back * (1 - ease((t - d1 - d2) / d3)); lab = p["back"]
+    else:
+        m = 0.0; lab = p["second"]
+    ma = math.radians(m); ha = math.radians(m / 12)
+    d.line([cx, cy, cx + 150 * math.sin(ha), cy - 150 * math.cos(ha)], fill=WHITE, width=16)
+    d.line([cx, cy, cx + 225 * math.sin(ma), cy - 225 * math.cos(ma)], fill=YELLOW, width=10)
+    d.ellipse([cx - 18, cy - 18, cx + 18, cy + 18], fill=YELLOW)
+    d.text((540, 1160), lab, font=F(58, "ExtraBold"), fill=YELLOW, anchor="mm")
+    if p.get("note"):
+        note(d, p["note"], 1240)
+
 VISUALS = dict(hook=v_hook, offer=v_offer, rows=v_rows, alloc=v_alloc, clock=v_clock,
                auction=v_auction, pop=v_pop, bars=v_bars, payoff=v_payoff, cta=v_cta,
-               card=v_card, mappin=v_mappin, tiles=v_tiles, converge=v_converge, negative=v_negative, relay=v_relay)
+               card=v_card, mappin=v_mappin, tiles=v_tiles, converge=v_converge, negative=v_negative, relay=v_relay,
+               sunpath=v_sunpath, zones=v_zones, noonclock=v_noonclock)
 
 # ---------- audio ----------
 def tts_scene(text, voice, speed, path, kokoro):
@@ -448,7 +524,8 @@ def tts_scene(text, voice, speed, path, kokoro):
 STOP_END = {"a", "an", "the", "at", "of", "to", "in", "on", "for", "and", "or", "but", "by", "with",
             "from", "per", "as", "is", "are", "was", "that", "this", "its", "your", "their", "into", "who",
             "have", "has", "had", "be", "can", "will", "would", "were", "my", "our",
-            "you", "what", "than", "when", "where", "if", "so", "it", "they", "we"}
+            "you", "what", "than", "when", "where", "if", "so", "it", "they", "we",
+            "could", "should", "did", "does", "do", "about"}
 
 def chunk_caption(text, maxc=42):
     """Caption chunks follow sentences and clauses (up to two lines on screen).
@@ -464,6 +541,8 @@ def chunk_caption(text, maxc=42):
         length = len(" ".join(cur))
         end_sent = w.endswith((".", "?", "!")) and not abbrev.match(w.strip("\"'()"))
         end_clause = w.endswith((",", ";", ":"))
+        if end_clause and re.fullmatch(r"\d{1,2},", w) and re.match(r"\d{4}\b", words[i + 1]):
+            end_clause = False  # keep dates like "November 18, 1883" together
         if end_sent and length >= 12:
             chunks.append(" ".join(cur)); cur = []
         elif end_clause and length >= 22:
@@ -477,8 +556,9 @@ def chunk_caption(text, maxc=42):
             if len(" ".join(rest)) < 12 and len(" ".join(cur + rest)) <= maxc + 10:
                 continue  # finish the short clause on this chunk instead of orphaning it
             moved = []
-            while len(cur) > 1 and (cur[-1].lower().strip(",.") in STOP_END or cur[-1].lower().endswith("'s")):
-                moved.insert(0, cur.pop())
+            while len(cur) > 1 and (cur[-1].lower().strip(",.") in STOP_END or cur[-1].lower().endswith("'s")
+                                    or (cur[-1][0].isupper() and cur[-1].isalpha() and (moved or words[i + 1])[0][0].isupper())):
+                moved.insert(0, cur.pop())  # also keeps names like "Western Union" on one line
             chunks.append(" ".join(cur)); cur = moved
     if cur:
         chunks.append(" ".join(cur))
