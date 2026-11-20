@@ -640,10 +640,49 @@ def v_orbit(img, d, t, p):
     if p.get("note"):
         note(d, p["note"], 1262)
 
+def v_build(img, d, t, p):
+    """Action-first 'build-up' hook (EXP-06): an object is already moving at frame 0,
+    an action arrow draws, and the result pops in by ~1.2 s. Params: kicker, obj, action, result, note."""
+    if p.get("kicker"):
+        d.text((540, 380), p["kicker"], font=F(58, "ExtraBold"), fill=WHITE, anchor="mm")
+    # object slides in (already on screen at t=0), then bobs gently so the frame never freezes
+    u = ease(t / 0.7)
+    ox = 150 + 150 * u
+    oy = 820 + 10 * math.sin(t * 3.0)
+    d.rounded_rectangle([ox - 140, oy - 110, ox + 140, oy + 110], radius=36, fill=NAVY2, outline=WHITE, width=6)
+    for k, line in enumerate(wrap(d, p["obj"], F(46, "ExtraBold"), 250)[:3]):
+        d.text((ox, oy - 30 * (len(wrap(d, p["obj"], F(46, "ExtraBold"), 250)[:3]) - 1) + 60 * k), line,
+               font=F(46, "ExtraBold"), fill=WHITE, anchor="mm")
+    for k in range(3):  # motion lines behind the object while it moves
+        if u < 0.98:
+            yy = oy - 60 + 60 * k
+            d.line([ox - 240 + 30 * k, yy, ox - 165, yy], fill=MUTED, width=6)
+    # action arrow draws toward the result
+    a = ease((t - 0.3) / 0.6)
+    if a > 0:
+        x0, x1 = 460, 460 + 160 * a
+        pulse = 2 * math.sin(t * 6) if a >= 1 else 0
+        d.line([x0, 820, x1, 820], fill=YELLOW, width=int(12 + pulse))
+        if a > 0.6:
+            d.polygon([(x1 + 30, 820), (x1 - 8, 795), (x1 - 8, 845)], fill=YELLOW)
+        if p.get("action"):
+            d.text((540, 665), p["action"], font=F(36, "Bold"), fill=YELLOW, anchor="mm")
+    # result pops in
+    r = ease((t - 0.8) / 0.4)
+    if r > 0:
+        sc = 0.7 + 0.3 * r
+        cx, cy, hw, hh = 830, 820, 150 * sc, 115 * sc
+        d.rounded_rectangle([cx - hw, cy - hh, cx + hw, cy + hh], radius=36, fill=blend(NAVY, YELLOW, r))
+        for k, line in enumerate(wrap(d, p["result"], F(44, "ExtraBold"), 260)[:3]):
+            n = len(wrap(d, p["result"], F(44, "ExtraBold"), 260)[:3])
+            d.text((cx, cy - 28 * (n - 1) + 56 * k), line, font=F(int(44 * sc), "ExtraBold"), fill=NAVY, anchor="mm")
+    if p.get("note"):
+        note(d, p["note"], 1120)
+
 VISUALS = dict(hook=v_hook, offer=v_offer, rows=v_rows, alloc=v_alloc, clock=v_clock,
                auction=v_auction, pop=v_pop, bars=v_bars, payoff=v_payoff, cta=v_cta,
                card=v_card, mappin=v_mappin, tiles=v_tiles, converge=v_converge, negative=v_negative, relay=v_relay,
-               sunpath=v_sunpath, zones=v_zones, noonclock=v_noonclock, orbit=v_orbit)
+               sunpath=v_sunpath, zones=v_zones, noonclock=v_noonclock, orbit=v_orbit, build=v_build)
 
 # ---------- audio ----------
 def tts_scene(text, voice, speed, path, kokoro):
@@ -716,6 +755,11 @@ def main():
     cover_path = sys.argv[sys.argv.index("--cover") + 1] if "--cover" in sys.argv else None
     cover_hold = 0.5 if cover_path else 0.0
     spec = json.load(open(spec_path))
+    # EXP-06: "opening": "motion" = after the 0.5 s cover, the first scene opens with a push-in and a moving visual.
+    # "static" (default) = the current behaviour. The daily task alternates these by date (see Growth/experiment-log.md).
+    opening = spec.get("opening", "static")
+    if opening == "motion" and spec["scenes"][0]["visual"] == "hook":
+        print("WARNING: opening=motion but scene 1 uses the static 'hook' card; use 'build' or another animated visual.")
     os.makedirs(out, exist_ok=True)
     work = os.path.join(out, "_work"); os.makedirs(work, exist_ok=True)
     os.makedirs(os.path.join(out, "images"), exist_ok=True)
@@ -784,6 +828,12 @@ def main():
                 fn(img, d, t, sc["params"], logo_path)
             else:
                 fn(img, d, t, sc["params"])
+            if opening == "motion" and tl["i"] == 0 and t < 0.9:
+                z = 1.10 - 0.10 * ease(t / 0.9)  # push-in: starts 10% zoomed, settles by 0.9 s
+                zw, zh = int(W / z), int(H / z)
+                l, tp = (W - zw) // 2, (H - zh) // 2
+                img = img.crop((l, tp, l + zw, tp + zh)).resize((W, H), Image.BICUBIC)
+                d = ImageDraw.Draw(img)
             ctext = next((c["text"] for c in cues if c["start"] <= gt < c["end"]), None)
             caption(img, ctext)
             # gentle fade at scene start
