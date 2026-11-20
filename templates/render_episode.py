@@ -105,6 +105,10 @@ def caption(img, text):
         for k in range(1, len(words)):
             a, b = " ".join(words[:k]), " ".join(words[k:])
             w_ = max(d.textlength(a, font=font), d.textlength(b, font=font))
+            if words[k - 1].lower().strip(",.:;\"'") in STOP_END:
+                w_ += 400  # avoid a top line that ends on a weak word ("Tomorrow: why / do so...")
+            if k == 1 or k == len(words) - 1:
+                w_ += 300  # avoid one-word lines
             if best is None or w_ < best[0]:
                 best = (w_, [a, b])
         lines = best[1]
@@ -507,10 +511,139 @@ def v_noonclock(img, d, t, p):
     if p.get("note"):
         note(d, p["note"], 1240)
 
+# ---------- orbit (added 2026-11-20) ----------
+_orb_cache = {}
+def _cannon_path(frac, r0, R):
+    """Projectile fired horizontally from radius r0 around a point mass, speed = frac * circular speed.
+    Returns list of (x, y) offsets from Earth's centre until it hits radius R or completes one lap."""
+    key = (round(frac, 3), r0, R)
+    if key in _orb_cache:
+        return _orb_cache[key]
+    GM = 1.0
+    x, y = 0.0, -r0
+    vx, vy = frac * math.sqrt(GM / r0), 0.0
+    pts, ang, dt = [(x, y)], 0.0, 0.002 * r0 ** 1.5
+    for _ in range(20000):
+        r = math.hypot(x, y)
+        ax, ay = -GM * x / r ** 3, -GM * y / r ** 3
+        vx += ax * dt; vy += ay * dt
+        x2, y2 = x + vx * dt, y + vy * dt
+        ang += abs(math.atan2(x * y2 - y * x2, x * x2 + y * y2))
+        x, y = x2, y2
+        pts.append((x, y))
+        if math.hypot(x, y) <= R or ang >= 2 * math.pi:
+            break
+    _orb_cache[key] = pts
+    return pts
+
+def _earth(d, cx, cy, R):
+    d.ellipse([cx - R, cy - R, cx + R, cy + R], fill=NAVY2, outline=WHITE, width=6)
+    for k in (-0.5, 0.0, 0.5):
+        h = R * math.sqrt(1 - k * k)
+        d.arc([cx - h, cy + k * R - R * 0.18, cx + h, cy + k * R + R * 0.18], 0, 180, fill=MUTED, width=3)
+
+def _station(d, x, y, s=1.0, col=YELLOW):
+    d.rectangle([x - 16 * s, y - 12 * s, x + 16 * s, y + 12 * s], fill=col)
+    for sx in (-1, 1):
+        d.rectangle([x + sx * 22 * s - 14 * s, y - 26 * s, x + sx * 22 * s + 14 * s, y + 26 * s], fill=WHITE)
+        d.line([x + sx * 16 * s, y, x + sx * 8 * s + sx * 0, y], fill=col, width=int(4 * s))
+
+def _arrow(d, x0, y0, x1, y1, col, w=8):
+    d.line([x0, y0, x1, y1], fill=col, width=w)
+    a = math.atan2(y1 - y0, x1 - x0)
+    L = 26
+    d.polygon([(x1, y1), (x1 - L * math.cos(a - 0.45), y1 - L * math.sin(a - 0.45)),
+               (x1 - L * math.cos(a + 0.45), y1 - L * math.sin(a + 0.45))], fill=col)
+
+def v_orbit(img, d, t, p):
+    """Orbit diagrams. mode 'station': station circling Earth with a sideways arrow and a gravity arrow
+    (fully drawn from frame 0). mode 'cannon': Newton's cannon on a mountain; 'shots' = list of speed fractions
+    (1.0 = orbit); the first 'drawn' shots are shown complete, the rest are animated. mode 'together': station
+    and astronaut dropping in sync. mode 'drag': orbit slowly sinks, then a reboost lifts it.
+    params: kicker, mode, label, note."""
+    if p.get("kicker"):
+        d.text((540, 430), p["kicker"], font=F(44, "ExtraBold") if p.get("big_kicker") else F(40, "Bold"), fill=YELLOW, anchor="mm")
+    mode = p.get("mode", "station")
+    cx, cy = 540, 860
+    if mode == "station":
+        R, ro = 220, 330
+        _earth(d, cx, cy, R)
+        n = 60
+        for k in range(n):
+            if k % 2 == 0:
+                a0, a1 = 360 * k / n, 360 * (k + 1) / n
+                d.arc([cx - ro, cy - ro, cx + ro, cy + ro], a0, a1, fill=MUTED, width=4)
+        ang = -math.pi / 2 + 0.55 * t
+        sx, sy = cx + ro * math.cos(ang), cy + ro * math.sin(ang)
+        tx, ty = -math.sin(ang), math.cos(ang)
+        _arrow(d, sx, sy, sx + 150 * tx, sy + 150 * ty, WHITE)
+        _arrow(d, sx, sy, sx + (cx - sx) * 0.48, sy + (cy - sy) * 0.48, YELLOW)
+        _station(d, sx, sy, 1.3)
+        if p.get("tlabel"):
+            d.text((sx + 150 * tx + 20 * tx, sy + 150 * ty - 40), p["tlabel"], font=F(34, "Bold"), fill=WHITE, anchor="mm")
+    elif mode == "cannon":
+        R = 210
+        cy = 860
+        _earth(d, cx, cy, R)
+        top = cy - R - 80
+        d.polygon([(cx - 105, cy - R + 22), (cx, top), (cx + 105, cy - R + 22)], fill=WHITE)
+        d.rectangle([cx - 8, top - 22, cx + 46, top - 2], fill=YELLOW)
+        r0 = R + 80 + 12
+        shots = p.get("shots", [])
+        drawn = p.get("drawn", 0)
+        cols = [MUTED, WHITE, YELLOW]
+        for i, fr in enumerate(shots):
+            pts = _cannon_path(fr, r0, R)
+            if i < drawn:
+                u = 1.0
+            else:
+                u = ease((t - 0.3 - 1.4 * (i - drawn)) / (2.2 if fr >= 0.99 else 1.1))
+            m = max(2, int(len(pts) * u))
+            seg = [(cx + x, cy + y) for x, y in pts[:m]]
+            if u > 0:
+                d.line(seg, fill=cols[min(i, 2)] if fr < 0.99 else YELLOW, width=7, joint="curve")
+                bx, by = seg[-1]
+                d.ellipse([bx - 14, by - 14, bx + 14, by + 14], fill=YELLOW if fr >= 0.99 else WHITE)
+    elif mode == "together":
+        drop = (t * 120) % 240
+        x0, y0 = 540, 560 + drop
+        d.rounded_rectangle([x0 - 230, y0, x0 + 230, y0 + 300], radius=40, outline=YELLOW, width=8, fill=NAVY2)
+        ax, ay = x0, y0 + 150
+        d.ellipse([ax - 28, ay - 92, ax + 28, ay - 36], fill=WHITE)
+        d.line([ax, ay - 36, ax, ay + 40], fill=WHITE, width=12)
+        d.line([ax - 60, ay - 20, ax + 60, ay - 10], fill=WHITE, width=10)
+        d.line([ax, ay + 40, ax - 40, ay + 95], fill=WHITE, width=10)
+        d.line([ax, ay + 40, ax + 45, ay + 90], fill=WHITE, width=10)
+        for k, xx in enumerate((300, 780)):
+            _arrow(d, xx, 600 + drop, xx, 760 + drop, YELLOW, 8)
+    elif mode == "drag":
+        R, cy = 200, 800
+        _earth(d, cx, cy, R)
+        cyc = 5.0
+        u = (t % cyc) / cyc
+        if u < 0.7:
+            ro = 340 - 45 * (u / 0.7); boost = False
+        else:
+            ro = 295 + 45 * ease((u - 0.7) / 0.15); boost = True
+        d.arc([cx - 340, cy - 340, cx + 340, cy + 340], 0, 360, fill=NAVY2, width=3)
+        d.arc([cx - ro, cy - ro, cx + ro, cy + ro], 0, 360, fill=MUTED, width=4)
+        ang = -math.pi / 2 + 0.5 * t
+        sx, sy = cx + ro * math.cos(ang), cy + ro * math.sin(ang)
+        if boost:
+            tx, ty = -math.sin(ang), math.cos(ang)
+            _arrow(d, sx - 40 * tx, sy - 40 * ty, sx - 140 * tx, sy - 140 * ty, YELLOW, 10)
+        _station(d, sx, sy, 1.2)
+        lab = p.get("boost_label", "REBOOST") if boost else p.get("drag_label", "DRAG")
+        d.text((540, 1215), lab, font=F(52, "ExtraBold"), fill=YELLOW if boost else WHITE, anchor="mm")
+    if p.get("label"):
+        d.text((540, 1215), p["label"], font=F(46, "Bold"), fill=WHITE, anchor="mm")
+    if p.get("note"):
+        note(d, p["note"], 1262)
+
 VISUALS = dict(hook=v_hook, offer=v_offer, rows=v_rows, alloc=v_alloc, clock=v_clock,
                auction=v_auction, pop=v_pop, bars=v_bars, payoff=v_payoff, cta=v_cta,
                card=v_card, mappin=v_mappin, tiles=v_tiles, converge=v_converge, negative=v_negative, relay=v_relay,
-               sunpath=v_sunpath, zones=v_zones, noonclock=v_noonclock)
+               sunpath=v_sunpath, zones=v_zones, noonclock=v_noonclock, orbit=v_orbit)
 
 # ---------- audio ----------
 def tts_scene(text, voice, speed, path, kokoro):
@@ -525,7 +658,7 @@ STOP_END = {"a", "an", "the", "at", "of", "to", "in", "on", "for", "and", "or", 
             "from", "per", "as", "is", "are", "was", "that", "this", "its", "your", "their", "into", "who",
             "have", "has", "had", "be", "can", "will", "would", "were", "my", "our",
             "you", "what", "than", "when", "where", "if", "so", "it", "they", "we",
-            "could", "should", "did", "does", "do", "about"}
+            "could", "should", "did", "does", "do", "about", "why", "how"}
 
 def chunk_caption(text, maxc=42):
     """Caption chunks follow sentences and clauses (up to two lines on screen).
@@ -609,7 +742,8 @@ def main():
     # 2) captions timed across each scene's speech, proportional to characters
     cues = []
     for sc, tl in zip(spec["scenes"], timeline):
-        parts = chunk_caption(sc["caption"])
+        # optional manual breaks: "|" in a caption forces a new chunk there (never shown on screen)
+        parts = [c for seg in sc["caption"].split("|") if seg.strip() for c in chunk_caption(seg.strip())]
         n = sum(len(p) for p in parts)
         cur = tl["start"] + lead
         for p in parts:
