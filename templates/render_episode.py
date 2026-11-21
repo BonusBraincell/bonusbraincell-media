@@ -307,7 +307,7 @@ def v_card(img, d, t, p):
     d.rounded_rectangle([x0, y0, x1, y1], radius=40, fill=blend(NAVY, NAVY2, a1), outline=blend(NAVY, WHITE, a1), width=6)
     d.text((540, y0 + 80), p["header"], font=F(40, "Bold"), fill=blend(NAVY, MUTED, a1), anchor="mm")
     d.text((540, 820), p["value"], font=F(170, "ExtraBold"), fill=blend(NAVY, YELLOW, a2), anchor="mm")
-    d.text((540, 970), p["sub"], font=F(46, "Bold"), fill=blend(NAVY, WHITE, a2), anchor="mm")
+    d.text((540, 970), p["sub"], font=F(int(p.get("sub_size", 46)), "Bold"), fill=blend(NAVY, WHITE, a2), anchor="mm")
     if p.get("note"):
         note(d, p["note"], 1200)
 

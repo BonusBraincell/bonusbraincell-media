@@ -40,7 +40,7 @@ def card(d, x0, y0, x1, y1, label, value, hl):
     d.rounded_rectangle([x0, y0, x1, y1], radius=36, fill=bg)
     d.ellipse([x0 + 22, (y0 + y1) / 2 - 14, x0 + 50, (y0 + y1) / 2 + 14], fill=NAVY)
     cx = (x0 + x1) / 2 + 12
-    vf, _ = fit_font(d, [value], x1 - x0 - 90, 150, floor=60)
+    vf, _ = fit_font(d, [value], x1 - x0 - 150, 150, floor=60)  # leave room for the between-circle and dot
     d.text((cx, y0 + (y1 - y0) * 0.42), value, font=vf, fill=fg, anchor="mm")
     d.text((cx, y0 + (y1 - y0) * 0.80), label, font=F(34, "Bold"), fill=fg, anchor="mm")
 
