@@ -41,6 +41,7 @@ Pick by what the story needs. The IPO clock-and-order-book is the model: a graph
 | `cross` | Boundaries: an object crosses and its state visibly changes (train + clock for time zones) | `left`, `right`, `boundary`, `icon`, `before`, `after`, `at` |
 | `diagram` | Physical mechanism: what moves or changes | `elements` [{type rect/circle/line/arrow/arc/polygon/text/icon, role, fill, width, show, hide, track, move {by, at, dur}, rotate {from, to, at, dur, origin} (degrees, **positive = clockwise on screen**), label {text, at}}] in canvas px |
 | `answer` | The payoff on screen; optional sign-off | `line` (`*yellow*`), `icon`, `sub`, `source`, `signoff` |
+| `wing` | Aerodynamics: a wing cross-section in moving air, yellow lift arrow (added 2026-11-22) | `mode` board/aoa/deflect/inverted/symmetric/camber/myth/fact, `kicker`, `label`, `source`, timing `flip_at`, `grow_at`, `lift_at`, `roll_at`, `tilt_at`, `level_at`, `retilt_at` (phrases OK). Cover: `visual.type` "wing" with two items [label, flip, track] |
 
 **Timing:** any `at`, `*_at`, `show`, `hide` or `track` value can be a phrase from that scene's narration ("rules go"); the renderer converts it to seconds. Prefer phrases, so changes land on the words.
 

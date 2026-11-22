@@ -47,3 +47,6 @@ Omit both keys and the scene uses the spec-level `voice`/`speed` as before.
 
 ## Cover card fit (Nov 21)
 make_cover.py now fits each tag card's value to the card width minus 150 px, so long words no longer touch the between-circle.
+
+## wing scene type (2026-11-22)
+v3 `wing` (design.py `s_wing`): NACA-style wing cross-section in dashed moving air; yellow = lift. Modes board, aoa, deflect, inverted, symmetric, camber, myth, fact. Cover `visual.type: "wing"` draws two symmetric sections (both tilted) with lift arrows. First used in BB-20261122-008.

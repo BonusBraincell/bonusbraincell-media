@@ -82,6 +82,18 @@ def make(out, spec, logo=None, preview=None):
         if vis.get("sub"):
             sf, _ = fit_font(d, [vis["sub"]], 960, 46, "Bold", floor=34)
             d.text((540, vy + 300), vis["sub"], font=sf, fill=WHITE, anchor="mm")
+    elif vis["type"] == "wing":  # two symmetric wing sections, both tilted, each with a lift arrow (2026-11-22)
+        for k, (lab, flip, hl) in enumerate(vis["items"]):
+            x0 = 60 + k * 500
+            d.rounded_rectangle([x0, vy - 200, x0 + 460, vy + 200], radius=DZ.S["radius"], fill=DZ.col("panel"),
+                                outline=DZ.col("track" if hl else "ink"), width=DZ.S["outline"])
+            fx, fy = x0 + 230, vy + 50
+            DZ.draw_foil(d, fx, fy, 300, 9, camber=vis.get("camber", 0.0), thick=0.14, flip=flip, fill="ink", outline="ink")
+            DZ.arrow(d, (fx, fy - 30), (fx, fy - 190), "track", DZ.S["track"] + 4)
+            d.text((fx, vy + 150), lab, font=F(38, "ExtraBold"), fill=DZ.col("track" if hl else "ink"), anchor="mm")
+        if vis.get("between"):
+            d.ellipse([540 - 62, vy - 62, 540 + 62, vy + 62], fill=DZ.col("bg"))
+            d.text((540, vy - 4), vis["between"], font=F(96, "ExtraBold"), fill=DZ.col("track"), anchor="mm")
     else:  # big number / word
         bf, bs = fit_font(d, [vis["text"]], 900, 400, floor=160)
         d.text((540, vy - 40), vis["text"], font=bf, fill=YELLOW, anchor="mm")

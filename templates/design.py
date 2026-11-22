@@ -629,8 +629,143 @@ def s_answer(img, d, t, p, logo_path=None):
     else:
         source(d, p.get("source"))
 
+# ---------- wing cross-section (added 2026-11-22 for aerodynamics episodes) ----------
+def foil_pts(camber=0.04, thick=0.12, n=40):
+    """NACA 4-digit style airfoil in chord units: x 0 (leading edge) -> 1 (trailing edge), y up. camber 0 = symmetric."""
+    p_ = 0.4
+    up, lo = [], []
+    for k in range(n + 1):
+        x = (1 - math.cos(math.pi * k / n)) / 2
+        yt = 5 * thick * (0.2969 * math.sqrt(x) - 0.1260 * x - 0.3516 * x ** 2 + 0.2843 * x ** 3 - 0.1036 * x ** 4)
+        yc = camber / p_ ** 2 * (2 * p_ * x - x * x) if x < p_ else camber / (1 - p_) ** 2 * ((1 - 2 * p_) + 2 * p_ * x - x * x)
+        up.append((x, yc + yt)); lo.append((x, yc - yt))
+    return up + lo[::-1]
+
+def foil_xy(x, y, cx, cy, chord, aoa, flip=False, sy=1.0, pivot=0.35):
+    """chord coords -> canvas px. aoa > 0 = leading edge (left) raised into air moving left to right."""
+    y = (-y if flip else y) * sy
+    x -= pivot
+    a = math.radians(aoa)
+    return cx + chord * (x * math.cos(a) + y * math.sin(a)), cy - chord * (-x * math.sin(a) + y * math.cos(a))
+
+def draw_foil(d, cx, cy, chord, aoa, camber=0.04, thick=0.12, flip=False, sy=1.0, fill="panel", outline="ink", a=1.0):
+    pts = [foil_xy(x, y, cx, cy, chord, aoa, flip, sy) for x, y in foil_pts(camber, thick)]
+    d.polygon(pts, fill=col(fill, a) if fill else None, outline=col(outline, a), width=S["outline"])
+    return pts
+
+def _airflow(d, t, cx, cy, chord, bend_deg, rows=(-170, -85, 85, 170), role="muted"):
+    """Dashed streamlines moving left to right; straight upstream, bent down behind the wing (top and bottom alike)."""
+    te = cx + chord * 0.65
+    k = math.tan(math.radians(max(-4.0, min(16.0, bend_deg))) * 1.6)
+    off = (t * 140) % 60
+    for r in rows:
+        x = 40 - 60 + off
+        while x < W - 40:
+            x0, x1 = x, x + 30
+            if x0 > 40:
+                y0 = cy + r + (k * (x0 - te) if x0 > te else 0)
+                y1 = cy + r + (k * (x1 - te) if x1 > te else 0)
+                d.line([x0, y0, x1, y1], fill=col(role), width=S["line"] - 1)
+            x += 60
+
+def s_wing(img, d, t, p):
+    """Wing cross-section in moving air; yellow = lift (the thing to track). modes:
+    board (flat plate tilted, flips at flip_at and still lifts) · aoa (angle-of-attack arc grows; illustrative angles) ·
+    deflect (streamlines bend down behind the wing, lift arrow grows at lift_at) · inverted (rolls upside down at roll_at,
+    then tilts to a lifting angle at tilt_at) · symmetric (level = no lift, tilts at tilt_at, flips at flip_at) ·
+    camber (ordinary wing upright vs inverted, upright arrow bigger; illustrative) · myth / fact (two air parcels race over
+    and under; myth = arrive together, fact = top arrives first). params: mode, kicker, label, source, *_at."""
+    mode = p.get("mode", "aoa")
+    kicker(d, p.get("kicker"))
+    cx, cy, chord = CX, 930, 520
+    label = p.get("label")
+    def lift(Lf, x=cx, y=cy - 40):
+        if Lf > 0.04:
+            top = y - 250 * min(1.0, Lf)
+            arrow(d, (x, y), (x, top), "track", S["track"])
+            txt(d, (x + 30, top + 26), "LIFT", "small", "track", "lm", 200)
+    if mode == "board":
+        u = ease((t - float(p.get("flip_at", 1.8))) / M["change"] / 1.6)
+        sy = math.cos(math.pi * u)
+        _airflow(d, t, cx, cy, chord, 10)
+        pts = [foil_xy(x, y, cx, cy, chord, 10, sy=sy) for x, y in [(0, 0.025), (1, 0.025), (1, -0.025), (0, -0.025)]]
+        d.polygon(pts, fill=col("ink" if sy > 0 else "muted"))
+        lift(0.8)
+        label = label or ("FLIPPED: STILL LIFTS" if u > 0.5 else "FLAT BOARD, TILTED")
+    elif mode == "aoa":
+        aoa = 3 + 7 * ease((t - float(p.get("grow_at", 0.4))) / 1.6)
+        _airflow(d, t, cx, cy, chord, aoa)
+        draw_foil(d, cx, cy, chord, aoa)
+        le, te = foil_xy(0, 0, cx, cy, chord, aoa), foil_xy(1, 0, cx, cy, chord, aoa)
+        for k in range(0, 18, 2):
+            a0, a1 = -0.35 + k * 0.08, -0.35 + (k + 1) * 0.08
+            d.line([le[0] + (te[0] - le[0]) * a0, le[1] + (te[1] - le[1]) * a0,
+                    le[0] + (te[0] - le[0]) * a1, le[1] + (te[1] - le[1]) * a1], fill=col("track"), width=S["line"])
+        ox, oy = te
+        d.line([ox - 720, oy, ox - 30, oy], fill=col("ink"), width=S["line"] - 2)
+        R = 500
+        d.arc([ox - R, oy - R, ox + R, oy + R], 180, 180 + aoa, fill=col("track"), width=S["track"])
+        txt(d, (ox - R - 16, oy - 60), f"{aoa:.0f}°", "label", "track", "rm", 200)
+        arrow(d, (150, 1110), (300, 1110), "ink")
+        txt(d, (320, 1110), "ONCOMING AIR", "small", "ink", "lm", 500)
+        illustrative(d, L["source_y"])
+    elif mode == "deflect":
+        _airflow(d, t, cx, cy, chord, 8, rows=(-200, -130, -60, 60, 130, 200), role="ink")
+        draw_foil(d, cx, cy, chord, 8)
+        g = ease((t - float(p.get("lift_at", 1.0))) / M["change"] / 2)
+        arrow(d, (760, 1010), (790, 1110), "ink"); arrow(d, (830, 1030), (860, 1130), "ink")
+        txt(d, (720, 1170), "AIR DOWN", "small", "ink", "mm", 300)
+        lift(0.9 * g)
+    elif mode == "inverted":
+        u = ease((t - float(p.get("roll_at", 0.3))) / 1.0)
+        g = ease((t - float(p.get("tilt_at", 2.2))) / 1.4)
+        flip = u > 0.5
+        aoa = 9 * g
+        _airflow(d, t, cx, cy, chord, aoa - 2 if flip else 4)
+        if 0.05 < u < 0.95:
+            draw_foil(d, cx, cy, chord, 0, sy=abs(math.cos(math.pi * u)))
+        else:
+            draw_foil(d, cx, cy, chord, aoa if flip else 0, flip=flip)
+        lift((aoa - 2) / 9 if flip else 0.3)
+        label = label or ("UPSIDE DOWN + TILTED: LIFT" if g > 0.5 else ("UPSIDE DOWN, LEVEL" if flip else "RIGHT SIDE UP"))
+    elif mode == "symmetric":
+        g = ease((t - float(p.get("tilt_at", 1.6))) / 1.0)
+        u = ease((t - float(p.get("flip_at", 4.2))) / 0.8)
+        lv = ease((t - float(p["level_at"])) / M["change"]) if p.get("level_at") is not None else 0.0
+        rt = ease((t - float(p["retilt_at"])) / M["change"]) if p.get("retilt_at") is not None else 0.0
+        g = g * (1 - lv) + rt
+        aoa = 9 * g
+        _airflow(d, t, cx, cy, chord, aoa)
+        draw_foil(d, cx, cy, chord, aoa, camber=0.0, thick=0.14, sy=math.cos(math.pi * u))
+        lift(0.8 * g)
+        label = label or ("LEVEL: NO LIFT" if g < 0.5 else ("FLIPPED: SAME SHAPE" if u > 0.5 and lv < 0.5 else "TILTED: LIFT"))
+    elif mode == "camber":
+        for k, (yy, flip, Lf, lab) in enumerate([(820, False, 0.75, "RIGHT SIDE UP"), (1130, True, 0.4, "UPSIDE DOWN")]):
+            a = inn(t, 0.2 + 0.9 * k)
+            draw_foil(d, 600, yy, 380, 6, flip=flip, a=a)
+            if a > 0.5:
+                arrow(d, (600, yy - 30), (600, yy - 30 - 190 * Lf), "track", S["track"])
+            txt(d, (300, yy - 110), lab, "small", "ink", "mm", 360, a)
+        illustrative(d, L["source_y"])
+    elif mode in ("myth", "fact"):
+        draw_foil(d, cx, cy, chord, 6)
+        fp = foil_pts()
+        top = [foil_xy(x, y + 0.04, cx, cy, chord, 6) for x, y in fp[:41]]
+        bot = [foil_xy(x, y - 0.04, cx, cy, chord, 6) for x, y in fp[41:][::-1]]
+        u = (t % 3.2) / 2.4
+        for path, uu, role in ((top, min(1.0, u * (1.0 if mode == "myth" else 1.6)), "track"), (bot, min(1.0, u), "ink")):
+            d.line(path, fill=col("line"), width=S["line"] - 2)
+            x, y = path[min(len(path) - 1, int(uu * (len(path) - 1)))]
+            d.ellipse([x - 20, y - 20, x + 20, y + 20], fill=col(role))
+        txt(d, (cx - 250, cy - 170), "TOP AIR", "small", "track", "mm", 300)
+        txt(d, (cx - 250, cy + 140), "BOTTOM AIR", "small", "ink", "mm", 300)
+        label = label or ("MYTH: THEY MEET AT THE BACK" if mode == "myth" else "TOP AIR GETS THERE FIRST")
+    if label:
+        txt(d, (CX, 1195), label, "label", "ink", "mm", 800)
+    source(d, p.get("source"))
+
 V3 = dict(hook_object=s_hook_object, compare=s_compare, whole=s_whole, process=s_process,
-          cross=s_cross, diagram=s_diagram, answer=s_answer)
+          cross=s_cross, diagram=s_diagram, answer=s_answer, wing=s_wing)
 
 # ---------- QA: layout check against platform guides ----------
 def _hit(b, r):
