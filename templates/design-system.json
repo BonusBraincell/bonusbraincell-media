@@ -1,0 +1,241 @@
+{
+  "_doc": "Bonus Braincell design system v3 (2026-11-20). Single source of truth for render_episode.py, make_cover.py and design.py. Rules and scene types: templates/DESIGN.md. Edit values here; never hard-code them in a visual.",
+  "version": "3.0",
+  "canvas": {
+    "w": 1080,
+    "h": 1920,
+    "fps": 30
+  },
+  "color": {
+    "bg": "#0A1E3E",
+    "bg_dot": "#0F2649",
+    "panel": "#132C5A",
+    "line": "#2B4475",
+    "track": "#F8D607",
+    "on_track": "#0A1E3E",
+    "ink": "#F4F6FB",
+    "muted": "#9AA8CC",
+    "dim": "#5F709B",
+    "cobalt": "#0020D1",
+    "caption_box_rgba": [
+      4,
+      10,
+      24,
+      178
+    ],
+    "_sampled": "bg + track sampled from bonusbraincell.png (logo); cobalt from Bonus Braincell Cobalt Swipe Banner.png"
+  },
+  "font": {
+    "dir": "/usr/share/fonts/opentype/inter/",
+    "family": "Inter"
+  },
+  "type": {
+    "hook": {
+      "size": 92,
+      "weight": "ExtraBold",
+      "line": 1.06,
+      "min": 64,
+      "max_lines": 2
+    },
+    "kicker": {
+      "size": 48,
+      "weight": "ExtraBold",
+      "line": 1.1,
+      "min": 38,
+      "max_lines": 2
+    },
+    "value": {
+      "size": 150,
+      "weight": "ExtraBold",
+      "line": 1.0,
+      "min": 80,
+      "max_lines": 1
+    },
+    "unit": {
+      "size": 44,
+      "weight": "Bold",
+      "line": 1.1,
+      "min": 32,
+      "max_lines": 1
+    },
+    "label": {
+      "size": 40,
+      "weight": "Bold",
+      "line": 1.15,
+      "min": 34,
+      "max_lines": 2
+    },
+    "small": {
+      "size": 34,
+      "weight": "SemiBold",
+      "line": 1.15,
+      "min": 30,
+      "max_lines": 2
+    },
+    "caption": {
+      "size": 56,
+      "weight": "Bold",
+      "line": 1.22,
+      "min": 48,
+      "max_lines": 2
+    },
+    "source": {
+      "size": 28,
+      "weight": "Medium",
+      "line": 1.2,
+      "min": 26,
+      "max_lines": 2
+    },
+    "badge": {
+      "size": 26,
+      "weight": "Bold",
+      "line": 1.0,
+      "min": 24,
+      "max_lines": 1
+    },
+    "lockup": {
+      "size": 26,
+      "weight": "ExtraBold",
+      "line": 1.0,
+      "min": 24,
+      "max_lines": 1
+    },
+    "answer": {
+      "size": 84,
+      "weight": "ExtraBold",
+      "line": 1.1,
+      "min": 58,
+      "max_lines": 3
+    }
+  },
+  "layout": {
+    "margin_x": 72,
+    "center_x": 540,
+    "progress_h": 8,
+    "lockup": {
+      "x": 72,
+      "y": 172,
+      "mark_h": 46,
+      "gap": 14,
+      "_note": "one compact row: mark + BONUS BRAINCELL + series in muted text; no pill"
+    },
+    "kicker_y": 540,
+    "stage": [
+      90,
+      620,
+      990,
+      1250
+    ],
+    "stage_tall": [
+      90,
+      500,
+      990,
+      1270
+    ],
+    "source_y": 1268,
+    "essential_max_x": 920,
+    "caption": {
+      "center_y": 1385,
+      "max_w": 700,
+      "pad_x": 30,
+      "pad_y": 16,
+      "radius": 22,
+      "_note": "box stays inside y 1290-1480"
+    },
+    "content_x": [
+      120,
+      920
+    ],
+    "rail_y": 760,
+    "_content_note": "Essential text below y=rail_y stays inside content_x (right rail of all three apps starts ~x 920). txt() narrows text automatically."
+  },
+  "stroke": {
+    "line": 6,
+    "track": 10,
+    "outline": 5,
+    "arrow_head": 30,
+    "radius": 28,
+    "icon_px": 22
+  },
+  "motion": {
+    "ease": "cubic-out",
+    "enter": 0.35,
+    "change": 0.5,
+    "hold_min": 1.2,
+    "stagger": 0.15,
+    "scene_fade": 0.15,
+    "cover_hold": 0.5,
+    "push_in": 0.9,
+    "push_in_scale": 1.1
+  },
+  "platform_guides": {
+    "_status": "ESTIMATED from public UI layouts on 2026-11-20; not verified against live previews. Re-check when a live preview is available and update here.",
+    "youtube_shorts": {
+      "top": [
+        0,
+        0,
+        1080,
+        160
+      ],
+      "bottom": [
+        0,
+        1500,
+        1080,
+        1920
+      ],
+      "right": [
+        930,
+        860,
+        1080,
+        1620
+      ]
+    },
+    "instagram_reels": {
+      "top": [
+        0,
+        0,
+        1080,
+        150
+      ],
+      "bottom": [
+        0,
+        1530,
+        1080,
+        1920
+      ],
+      "right": [
+        950,
+        1080,
+        1080,
+        1680
+      ]
+    },
+    "tiktok": {
+      "top": [
+        0,
+        0,
+        1080,
+        180
+      ],
+      "bottom": [
+        0,
+        1490,
+        1080,
+        1920
+      ],
+      "right": [
+        920,
+        780,
+        1080,
+        1560
+      ]
+    },
+    "youtube_native_captions": [
+      60,
+      236,
+      1020,
+      480
+    ],
+    "_native_caption_note": "Band where YouTube's own captions were observed over the old series pill (satellites Short). Keep essential text out of it."
+  }
+}

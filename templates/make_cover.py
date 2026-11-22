@@ -12,11 +12,14 @@ cover.json:
    "kicker": "So who sets the first trade?",
    "visual": {"type": "tags", "items": [["OFFER PRICE", "$20", true], ["WHAT YOU PAY", "?", false]], "between": "≠"}}
   or "visual": {"type": "big", "text": "1%", "sub": "of oil futures end in a real barrel"}
+  or "visual": {"type": "icon", "name": "ship", "label": "MONROVIA", "sub": "optional line"}   (v3: topic object, Lucide icon)
+Design system v3: colors, fonts and the logo come from design-system.json / design.py (shared with the renderer).
 --preview writes OUT/cover_crops.png: full frame, 3:4 grid crop, 1:1 crop side by side.
 """
 import sys, os, json
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from render_episode import background, F, wrap, logo_img, NAVY, YELLOW, WHITE, MUTED, W, H
+import design as DZ
 from PIL import Image, ImageDraw, ImageFilter
 
 
@@ -30,7 +33,7 @@ def fit_font(d, lines, maxw, start=150, weight="ExtraBold", floor=96):
 def glow(img, cx, cy, r):
     g = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     gd = ImageDraw.Draw(g)
-    gd.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(255, 214, 10, 70))
+    gd.ellipse([cx - r, cy - r, cx + r, cy + r], fill=DZ.C["track"] + (70,))
     g = g.filter(ImageFilter.GaussianBlur(r * 0.45))
     img.paste(g, (0, 0), g)
 
@@ -71,6 +74,14 @@ def make(out, spec, logo=None, preview=None):
         if vis.get("between"):
             d.ellipse([540 - 62, vy - 62, 540 + 62, vy + 62], fill=NAVY)
             d.text((540, vy - 4), vis["between"], font=F(96, "ExtraBold"), fill=YELLOW, anchor="mm")
+    elif vis["type"] == "icon":  # v3: the episode's own object
+        DZ.paste_icon(img, d, vis["name"], 540, vy - 40, 460, "track")
+        d = ImageDraw.Draw(img)
+        if vis.get("label"):
+            DZ.chip(d, (540, vy + 230), vis["label"], fill="panel", fg="track", role="label", pad=(30, 14))
+        if vis.get("sub"):
+            sf, _ = fit_font(d, [vis["sub"]], 960, 46, "Bold", floor=34)
+            d.text((540, vy + 300), vis["sub"], font=sf, fill=WHITE, anchor="mm")
     else:  # big number / word
         bf, bs = fit_font(d, [vis["text"]], 900, 400, floor=160)
         d.text((540, vy - 40), vis["text"], font=bf, fill=YELLOW, anchor="mm")

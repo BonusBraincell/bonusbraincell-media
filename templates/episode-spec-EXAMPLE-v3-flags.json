@@ -1,0 +1,179 @@
+{
+ "title": "Why do so many ships fly Liberia's flag?",
+ "series": "The Fine Print",
+ "opening": "motion",
+ "speed": 1.08,
+ "scenes": [
+  {
+   "visual": "hook_object",
+   "speed": 1.1,
+   "subject": "cargo ship swaying, MONROVIA on its stern",
+   "changes": [
+    "0.0s ship already on screen, swaying",
+    "0.9s headline locked; ship stays the tracked object"
+   ],
+   "tts": "Paint 'Monrovia' on the back of a ship, and it follows Liberia's rules. Even if the owner has never been to Liberia.",
+   "caption": "Paint 'Monrovia' on the back of a ship,|and it follows Liberia's rules.|Even if the owner has never been to Liberia.",
+   "params": {
+    "headline": "Whose rules does this ship *follow?*",
+    "icon": "ship",
+    "icon_label": "MONROVIA",
+    "motion": "sway"
+   }
+  },
+  {
+   "visual": "process",
+   "subject": "the same ship carried through registration states",
+   "changes": [
+    "state 2 lights on 'flag'",
+    "state 3 lights on 'rules go'"
+   ],
+   "tts": "Every ship has to be registered in one country. It flies that country's flag. And that country's rules go wherever the ship goes: safety inspections, crew standards, taxes. So a ship's flag is really its rulebook.",
+   "caption": "Every ship has to be registered|in one country.|It flies that country's flag.|And that country's rules go|wherever the ship goes:|safety inspections, crew standards, taxes.|So a ship's flag is really its rulebook.",
+   "params": {
+    "kicker": "One ship, one flag state",
+    "layout": "h",
+    "flow": true,
+    "token": {
+     "icon": "ship"
+    },
+    "states": [
+     {
+      "label": "Registered",
+      "sub": "in one country"
+     },
+     {
+      "label": "Flies its flag",
+      "sub": "on the stern"
+     },
+     {
+      "label": "Its rules apply",
+      "sub": "safety, crew, tax"
+     }
+    ],
+    "at": [
+     "Every ship",
+     "flies that",
+     "rules go"
+    ]
+   }
+  },
+  {
+   "visual": "compare",
+   "subject": "biggest owner countries vs biggest flag states, side by side",
+   "changes": [
+    "owners column appears",
+    "flags column appears in yellow on 'biggest flags'"
+   ],
+   "tts": "But the owner doesn't have to be from there. At the start of 2026, the countries owning the most shipping capacity were Greece, China and Japan. The biggest flags were Liberia, Panama and the Marshall Islands.",
+   "caption": "But the owner doesn't have to be from there.|At the start of 2026,|the countries owning the most shipping capacity|were Greece, China and Japan.|The biggest flags were Liberia, Panama|and the Marshall Islands.",
+   "params": {
+    "kicker": "Owners vs flags, by capacity",
+    "items": [
+     {
+      "label": "Biggest owner",
+      "value": "Greece",
+      "icon": "building-2",
+      "note": "then China, Japan"
+     },
+     {
+      "label": "Biggest flag",
+      "value": "Liberia",
+      "icon": "flag",
+      "note": "then Panama, Marshall Is.",
+      "track": true
+     }
+    ],
+    "vs": "\u2260",
+    "source": "UNCTADstat, start of 2026"
+   }
+  },
+  {
+   "visual": "cross",
+   "subject": "ship crossing from its home registry into an open registry; rules readout changes",
+   "changes": [
+    "ship crosses the registry line on 'switch'",
+    "readout flips from home-country rules to Liberia's rules"
+   ],
+   "tts": "Some registries compete for that business, with lower fees, simpler paperwork and flexible crew rules. Switch registries, and the ship switches rulebooks.",
+   "caption": "Some registries compete for that business,|with lower fees, simpler paperwork|and flexible crew rules.|Switch registries,|and the ship switches rulebooks.",
+   "params": {
+    "kicker": "\"Flags of convenience\"",
+    "left": "Home registry",
+    "right": "Open registry",
+    "boundary": "re-registration (paperwork, not a voyage)",
+    "icon": "ship",
+    "before": "Home rules",
+    "after": "Liberia's rules",
+    "at": "Switch registries"
+   }
+  },
+  {
+   "visual": "whole",
+   "subject": "world fleet capacity as one bar, top three registries highlighted",
+   "changes": [
+    "bar fills left to right",
+    "legend with each flag's share appears"
+   ],
+   "tts": "People call them flags of convenience. The three biggest held almost half of the world's cargo capacity at the start of 2025, and Liberia's registry is the largest of all.",
+   "caption": "People call them flags of convenience.|The three biggest held almost half|of the world's cargo capacity at the start of 2025,|and Liberia's registry is the largest of all.",
+   "params": {
+    "kicker": "Top 3 flags: almost half",
+    "total": "World fleet capacity, deadweight tons, Jan 1 2025",
+    "segments": [
+     {
+      "label": "Liberia",
+      "n": 17.4,
+      "value": "17.4%",
+      "track": true
+     },
+     {
+      "label": "Panama",
+      "n": 15.2,
+      "value": "15.2%",
+      "track": true
+     },
+     {
+      "label": "Marshall Islands",
+      "n": 12.5,
+      "value": "12.5%",
+      "track": true
+     },
+     {
+      "label": "Every other flag",
+      "n": 54.9
+     }
+    ],
+    "source": "UNCTAD, Review of Maritime Transport (as of Jan 1, 2025)"
+   }
+  },
+  {
+   "visual": "answer",
+   "speed": 1.0,
+   "subject": "the answer line",
+   "changes": [
+    "answer appears; key words in yellow"
+   ],
+   "tts": "So the flag on the back tells you whose rules a ship follows. Not who owns it.",
+   "caption": "So the flag on the back|tells you whose rules a ship follows.|Not who owns it.",
+   "params": {
+    "icon": "flag",
+    "line": "The flag shows *whose rules.* Not who owns it."
+   }
+  },
+  {
+   "visual": "answer",
+   "speed": 1.08,
+   "subject": "sign-off",
+   "changes": [
+    "mark and follow line"
+   ],
+   "tts": "Follow for one bonus braincell per scroll. Tomorrow: how does a plane fly upside down?",
+   "caption": "Follow for one bonus braincell per scroll.|Tomorrow: how does a plane fly upside down?",
+   "params": {
+    "line": "Tomorrow: how do planes fly *upside down?*",
+    "signoff": true
+   }
+  }
+ ]
+}

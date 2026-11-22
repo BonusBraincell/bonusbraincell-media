@@ -3,6 +3,9 @@
 
 Usage: python3 render_episode.py episode.json OUTPUT_DIR [--cover OUT/cover.png] [--logo path/to/logo.png]
 
+Design system v3 (2026-11-20): every color, size, position and timing comes from design-system.json via
+design.py; rules in DESIGN.md. Also writes scene-plan.md/.json, qa-report.json and qa-sheet.png.
+
 Reads an episode spec (scenes with narration, captions and a visual type),
 generates narration with Kokoro TTS (Apache-2.0), draws 1080x1920 frames with
 Pillow, encodes one file per scene, joins them, muxes audio, and writes
@@ -11,13 +14,15 @@ video.mp4, captions.srt, cover.png and images/ (one keyframe per scene).
 import json, math, os, subprocess, sys, wave, shutil
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import design as DZ
 
-W, H, FPS = 1080, 1920, 30
-NAVY = (11, 31, 75)
-NAVY2 = (18, 44, 102)
-YELLOW = (255, 214, 10)
-WHITE = (245, 247, 255)
-MUTED = (150, 166, 205)
+W, H, FPS = DZ.W, DZ.H, DZ.DS["canvas"]["fps"]
+NAVY = DZ.C["bg"]
+NAVY2 = DZ.C["panel"]
+YELLOW = DZ.C["track"]
+WHITE = DZ.C["ink"]
+MUTED = DZ.C["muted"]
 FONT_DIR = "/usr/share/fonts/opentype/inter/"
 
 _fc = {}
@@ -54,72 +59,18 @@ def wrap(d, s, font, maxw):
 def blend(c1, c2, a):
     return tuple(int(c1[i] + (c2[i] - c1[i]) * a) for i in range(3))
 
-# ---------- shared chrome ----------
-_bg = None
+# ---------- shared chrome (design system v3) ----------
 def background():
-    global _bg
-    if _bg is None:
-        img = Image.new("RGB", (W, H), NAVY)
-        d = ImageDraw.Draw(img)
-        for y in range(0, H, 60):
-            for x in range(0, W, 60):
-                d.ellipse([x - 2, y - 2, x + 2, y + 2], fill=NAVY2)
-        _bg = img
-    return _bg.copy()
+    return DZ.background()
 
-_logo = None
 def logo_img(size, logo_path):
-    global _logo
-    if logo_path and os.path.exists(logo_path):
-        im = Image.open(logo_path).convert("RGBA")
-        im.thumbnail((size, size))
-        return im
-    # placeholder mark (replace by dropping logo.png into Settings/brand/)
-    im = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    d.ellipse([0, 0, size - 1, size - 1], fill=YELLOW)
-    d.text((size / 2, size / 2), "BB", font=F(int(size * 0.42), "ExtraBold"), fill=NAVY, anchor="mm")
-    return im
+    return DZ.mark(size, logo_path)
 
 def chrome(img, d, series, progress, logo_path):
-    d.rectangle([0, 0, W, 10], fill=NAVY2)
-    d.rectangle([0, 0, int(W * progress), 10], fill=YELLOW)
-    lg = logo_img(72, logo_path)
-    img.paste(lg, (90, 196), lg)
-    d.text((180, 232), "BONUS BRAINCELL", font=F(34, "ExtraBold"), fill=WHITE, anchor="lm")
-    tw = d.textlength(series.upper(), font=F(26, "Bold"))
-    d.rounded_rectangle([180, 262, 180 + tw + 32, 304], radius=21, fill=YELLOW)
-    d.text((196, 283), series.upper(), font=F(26, "Bold"), fill=NAVY, anchor="lm")
+    DZ.chrome(img, d, series, progress, logo_path)
 
 def caption(img, text):
-    if not text:
-        return
-    ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(ov)
-    font = F(54, "Bold")
-    words = text.split()
-    if d.textlength(text, font=font) <= 860 or len(words) < 2:
-        lines = [text]
-    else:  # two balanced lines: pick the break that minimizes the longer line
-        best = None
-        for k in range(1, len(words)):
-            a, b = " ".join(words[:k]), " ".join(words[k:])
-            w_ = max(d.textlength(a, font=font), d.textlength(b, font=font))
-            if words[k - 1].lower().strip(",.:;\"'") in STOP_END:
-                w_ += 400  # avoid a top line that ends on a weak word ("Tomorrow: why / do so...")
-            if k == 1 or k == len(words) - 1:
-                w_ += 300  # avoid one-word lines
-            if best is None or w_ < best[0]:
-                best = (w_, [a, b])
-        lines = best[1]
-    lh = 70
-    total = lh * len(lines)
-    top = 1420 - total / 2
-    maxw = max(d.textlength(l, font=font) for l in lines)
-    d.rounded_rectangle([540 - maxw / 2 - 30, top - 22, 540 + maxw / 2 + 30, top + total + 14], radius=24, fill=(0, 0, 0, 120))
-    for i, l in enumerate(lines):
-        d.text((540, top + i * lh + lh / 2 - 4), l, font=font, fill=WHITE, anchor="mm")
-    img.paste(ov, (0, 0), ov)
+    DZ.caption(img, text, STOP_END)
 
 def tag(d, cx, cy, label, value, a=1.0, hl=True, w=360):
     col = YELLOW if hl else WHITE
@@ -683,6 +634,30 @@ VISUALS = dict(hook=v_hook, offer=v_offer, rows=v_rows, alloc=v_alloc, clock=v_c
                auction=v_auction, pop=v_pop, bars=v_bars, payoff=v_payoff, cta=v_cta,
                card=v_card, mappin=v_mappin, tiles=v_tiles, converge=v_converge, negative=v_negative, relay=v_relay,
                sunpath=v_sunpath, zones=v_zones, noonclock=v_noonclock, orbit=v_orbit, build=v_build)
+VISUALS.update(DZ.V3)  # v3 scene types: hook_object, compare, whole, process, cross, diagram, answer
+LEGACY = set(VISUALS) - set(DZ.V3)
+
+def resolve_times(obj, tts, lead, speech, warn):
+    """Convert narration phrases in timing fields to seconds from scene start (proportional to characters)."""
+    keys = ("at", "show", "hide", "track", "result_at")
+    def conv(v):
+        if isinstance(v, str):
+            i = tts.lower().find(v.lower())
+            if i < 0:
+                warn.append(f"timing phrase not found in narration: '{v}'"); return 0.0
+            return round(lead + speech * i / max(1, len(tts)), 2)
+        return v
+    if isinstance(obj, dict):
+        out = {}
+        for k, v in obj.items():
+            if k in keys or k.endswith("_at"):
+                out[k] = [conv(x) for x in v] if isinstance(v, list) else conv(v)
+            else:
+                out[k] = resolve_times(v, tts, lead, speech, warn)
+        return out
+    if isinstance(obj, list):
+        return [resolve_times(x, tts, lead, speech, warn) for x in obj]
+    return obj
 
 # ---------- audio ----------
 def tts_scene(text, voice, speed, path, kokoro):
@@ -753,7 +728,7 @@ def main():
     if "--logo" in sys.argv:
         logo_path = sys.argv[sys.argv.index("--logo") + 1]
     cover_path = sys.argv[sys.argv.index("--cover") + 1] if "--cover" in sys.argv else None
-    cover_hold = 0.5 if cover_path else 0.0
+    cover_hold = DZ.M["cover_hold"] if cover_path else 0.0
     spec = json.load(open(spec_path))
     # EXP-06: "opening": "motion" = after the 0.5 s cover, the first scene opens with a push-in and a moving visual.
     # "static" (default) = the current behaviour. The daily task alternates these by date (see Growth/experiment-log.md).
@@ -782,6 +757,15 @@ def main():
         timeline.append(dict(i=i, start=t0, dur=sdur, speech=dur, wav=wav))
         t0 += sdur
     total = t0
+    warns = []
+    for sc, tl in zip(spec["scenes"], timeline):
+        sc["_p"] = resolve_times(sc.get("params", {}), sc["tts"], lead, tl["speech"], warns)
+        sc["_p"]["_dur"] = tl["dur"]
+        if sc["visual"] in LEGACY:
+            warns.append(f"scene {tl['i'] + 1} uses legacy visual '{sc['visual']}' (allowed; v3 types preferred, see DESIGN.md)")
+        for k in ("subject", "changes"):
+            if k not in sc:
+                warns.append(f"scene {tl['i'] + 1} has no '{k}' (needed for the scene plan)")
 
     # 2) captions timed across each scene's speech, proportional to characters
     cues = []
@@ -819,15 +803,18 @@ def main():
                                  "-pix_fmt", "yuv420p", "-r", str(FPS), tmp], stdin=subprocess.PIPE)
         fn = VISUALS[sc["visual"]]
         keyframe = None
+        probe = {int(round(min(tl["dur"] - 0.1, 1.2) * FPS)), int(nfr * 0.85)}
+        sc["_qa"] = set()
         for fr in range(nfr):
             t = fr / FPS
             gt = tl["start"] + t
             img = background(); d = ImageDraw.Draw(img)
             chrome(img, d, spec["series"], gt / total, logo_path)
-            if sc["visual"] == "cta":
-                fn(img, d, t, sc["params"], logo_path)
+            DZ.reg_reset()
+            if sc["visual"] in ("cta", "answer"):
+                fn(img, d, t, sc["_p"], logo_path)
             else:
-                fn(img, d, t, sc["params"])
+                fn(img, d, t, sc["_p"])
             if opening == "motion" and tl["i"] == 0 and t < 0.9:
                 z = 1.10 - 0.10 * ease(t / 0.9)  # push-in: starts 10% zoomed, settles by 0.9 s
                 zw, zh = int(W / z), int(H / z)
@@ -836,9 +823,12 @@ def main():
                 d = ImageDraw.Draw(img)
             ctext = next((c["text"] for c in cues if c["start"] <= gt < c["end"]), None)
             caption(img, ctext)
+            if fr in probe:
+                sc["_qa"].update(DZ.layout_issues(DZ.REG["text"]))
+                sc["_qa"].update(f"text shrunk to minimum and cut: '{x[:50]}'" for x in DZ.REG["fit"])
             # gentle fade at scene start
             if t < 0.2 and tl["i"] > 0:
-                img = Image.blend(Image.new("RGB", (W, H), NAVY), img, 0.4 + 3 * t)
+                img = Image.blend(Image.new("RGB", (W, H), NAVY), img, min(1.0, 0.4 + 0.6 * t / DZ.M["scene_fade"]))
             proc.stdin.write(img.tobytes())
             if fr == int(nfr * 0.85):
                 keyframe = img
@@ -876,10 +866,113 @@ def main():
     os.replace(tmpv, os.path.join(out, "video.mp4"))
     json.dump(dict(total=total, scenes=timeline, cues=cues), open(os.path.join(work, "timeline.json"), "w"), indent=1)
     print(f"rendered {total:.2f}s, {len(cues)} captions")
+    write_plan_and_qa(spec, timeline, cues, out, total, warns, cover_path)
     if total <= 61:
         print(f"WARNING: video is {total:.2f}s; it must be longer than 61 s (target 65-90). Lengthen the script and re-render.")
     if total > 90:
         print(f"WARNING: video is {total:.2f}s; keep it at or under 90 s.")
+
+def _facts(p, acc):
+    if isinstance(p, dict):
+        for k, v in p.items():
+            if k.startswith("_"):
+                continue
+            if k in ("label", "value", "unit", "source", "note", "text", "kicker", "headline", "line", "sub", "total",
+                     "before", "after", "left", "right", "boundary", "icon_label", "result", "action", "vs"):
+                if isinstance(v, (str, int, float)):
+                    acc.append(f"{k}: {v}")
+            if k == "illustrative" and v:
+                acc.append("ILLUSTRATIVE NUMBERS badge")
+            _facts(v, acc)
+    elif isinstance(p, list):
+        for x in p:
+            _facts(x, acc)
+    return acc
+
+def _assets(p, acc):
+    if isinstance(p, dict):
+        for k, v in p.items():
+            if k in ("icon", "result_icon", "name") and isinstance(v, str):
+                acc.add(f"Lucide icon '{v}' (ISC, templates/icons)")
+            if k == "image" and isinstance(v, str):
+                acc.add(f"image {v} (rights in sources-and-rights.md)")
+            _assets(v, acc)
+    elif isinstance(p, list):
+        for x in p:
+            _assets(x, acc)
+    return acc
+
+def write_plan_and_qa(spec, timeline, cues, out, total, warns, cover_path):
+    """scene-plan.md/.json (production-ready plan per beat) + qa-report.json + qa-sheet.png."""
+    plan = []
+    for sc, tl in zip(spec["scenes"], timeline):
+        p = sc["_p"]
+        changes = sc.get("changes") or []
+        auto = []
+        for k, v in p.items():
+            if k == "at" and isinstance(v, list):
+                auto += [f"{v_:.1f}s: state {i + 1}" for i, v_ in enumerate(v)]
+            elif (k.endswith("_at") or k == "at") and isinstance(v, (int, float)):
+                auto.append(f"{v:.1f}s: {k}")
+        for e in p.get("elements", []) if isinstance(p.get("elements"), list) else []:
+            for k in ("show", "hide", "track"):
+                if e.get(k):
+                    auto.append(f"{float(e[k]):.1f}s: {e.get('type')} {e.get('name', e.get('text', ''))[:30]} {k}")
+            for k in ("move", "rotate"):
+                if e.get(k):
+                    auto.append(f"{float(e[k].get('at', 0)):.1f}s: {e.get('type')} {k}")
+        plan.append(dict(
+            beat=tl["i"] + 1, start=round(tl["start"], 2), end=round(tl["start"] + tl["dur"], 2),
+            narration=sc["tts"],
+            captions=[dict(start=round(c["start"], 2), end=round(c["end"], 2), text=c["text"]) for c in cues if c["scene"] == tl["i"]],
+            scene_type=sc["visual"], subject=sc.get("subject", ""),
+            labels_values_units_sources=_facts(p, []),
+            changes=changes, changes_auto=sorted(set(auto), key=lambda x: float(x.split("s:")[0])),
+            assets=sorted(_assets(p, set())) or ["drawn in renderer (no external asset)"],
+            qa=sorted(sc.get("_qa", set()))))
+    json.dump(dict(total=round(total, 2), cover=bool(cover_path), opening=spec.get("opening", "static"), beats=plan),
+              open(os.path.join(out, "scene-plan.json"), "w"), indent=1)
+    with open(os.path.join(out, "scene-plan.md"), "w") as f:
+        f.write(f"# Scene plan · {spec.get('title', spec.get('series', ''))}\n\nTotal {total:.1f} s · opening {spec.get('opening', 'static')} · design system v{DZ.DS['version']}\n")
+        if cover_path:
+            f.write(f"\n**0.00–{DZ.M['cover_hold']:.2f} s · cover** (frame 0 = thumbnail)\n")
+        for b in plan:
+            f.write(f"\n## Beat {b['beat']} · {b['start']:.2f}–{b['end']:.2f} s · {b['scene_type']}\n")
+            f.write(f"- **Main visual subject:** {b['subject'] or '(missing)'}\n- **Narration:** {b['narration']}\n")
+            f.write("- **Caption chunks:** " + " / ".join(f"[{c['start']:.1f}–{c['end']:.1f}] {c['text']}" for c in b["captions"]) + "\n")
+            f.write("- **Labels, values, units, sources:** " + ("; ".join(b["labels_values_units_sources"]) or "none") + "\n")
+            f.write("- **What changes and when:** " + ("; ".join(b["changes"] + b["changes_auto"]) or "static hold") + "\n")
+            f.write("- **Assets:** " + "; ".join(b["assets"]) + "\n")
+            if b["qa"]:
+                f.write("- **Layout check:** " + "; ".join(b["qa"]) + "\n")
+    issues = sorted({q for b in plan for q in b["qa"]})
+    missing = sorted(DZ.REG["missing_icons"])
+    rep_ = dict(design_version=DZ.DS["version"], duration=round(total, 2),
+                duration_ok=61 < total <= 90, cover_first_frame=bool(cover_path),
+                layout_issues=issues, missing_icons=missing, warnings=warns,
+                guides_status=DZ.DS["platform_guides"]["_status"],
+                pass_=bool(61 < total <= 90 and cover_path and not issues and not missing))
+    json.dump(rep_, open(os.path.join(out, "qa-report.json"), "w"), indent=1)
+    # phone-size contact sheet with guides: cover, 0.6 s, each scene keyframe
+    try:
+        vid = os.path.join(out, "video.mp4")
+        times = [0.1, 0.6] + [b["start"] + min(1.2, (b["end"] - b["start"]) * 0.5) for b in plan]
+        thumbs = []
+        for k, tm in enumerate(times):
+            fp = os.path.join(out, "_work", f"qa_{k:02}.png")
+            subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-ss", f"{tm:.2f}", "-i", vid, "-frames:v", "1", fp], check=True)
+            thumbs.append(DZ.guides_overlay(Image.open(fp).convert("RGB")).resize((270, 480)))
+        cols = 6
+        rows = (len(thumbs) + cols - 1) // cols
+        sheet = Image.new("RGB", (cols * 280 + 10, rows * 490 + 10), (24, 24, 28))
+        for k, th in enumerate(thumbs):
+            sheet.paste(th, (10 + (k % cols) * 280, 10 + (k // cols) * 490))
+        sheet.save(os.path.join(out, "qa-sheet.png"))
+    except Exception as ex:
+        warns.append(f"qa-sheet not made: {ex}")
+    print("QA:", "PASS" if rep_["pass_"] else "CHECK", f"| layout issues {len(issues)} | missing icons {len(missing)} | warnings {len(warns)}")
+    for x in issues[:12] + missing + warns[:12]:
+        print("  -", x)
 
 if __name__ == "__main__":
     main()
