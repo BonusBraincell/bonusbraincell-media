@@ -50,3 +50,12 @@ make_cover.py now fits each tag card's value to the card width minus 150 px, so 
 
 ## wing scene type (2026-11-22)
 v3 `wing` (design.py `s_wing`): NACA-style wing cross-section in dashed moving air; yellow = lift. Modes board, aoa, deflect, inverted, symmetric, camber, myth, fact. Cover `visual.type: "wing"` draws two symmetric sections (both tilted) with lift arrows. First used in BB-20261122-008.
+
+## Audio direction v1 (2026-11-22)
+Goal: narration that sounds recorded, not pasted. All of it is subtle; the AI label and the AI-voice line stay on every post.
+- **Varied pauses (automatic):** each sentence is synthesized separately and the gap after it depends on its ending: `.` 0.20–0.38 s, `?` 0.36–0.46 s, `...` 0.45–0.60 s, `!` 0.24–0.32 s, plus 0.06 s after a short punch line (≤6 words). Scene tails vary 0.28–0.46 s, 0.55 s before a `payoff`/`answer` scene. Seeded by `post_id`, so re-renders match. Per-scene override: `"pause_after": 0.5`.
+- **Room-tone bed (automatic):** a synthesized quiet-room floor (pink noise, no hiss, slow drift; no downloaded audio, so no license to track) under the whole video at `"room_tone_db": -50` (dBFS RMS). `null` turns it off. Pauses never hit digital zero.
+- **Breaths (opt-in, max 2):** `[inhale]` in a scene's `tts` inserts a soft 0.34 s inhale ~23 dB under the speech peak. Put it only before the longest sentence of the script. Markers are stripped from captions and timing phrases.
+- **Script punctuation is direction:** `...` = a held beat before a reveal, `?` = a real question pause, short sentences = punch. Use line-level variety, not uniform periods.
+- **Voice blend (available, off):** spec `"voice": {"af_heart": 0.8, "af_bella": 0.2}` blends Kokoro styles. Not used: `af_heart` is the brand voice. No pitch or tempo shifting on top of the 1.08× house speed.
+- **QA:** `qa-report.json` → `audio` block: `longest_digital_zero_s` (should be 0), `floor_dbfs_p5` (≈ −50), breaths, per-scene gaps and tails. A zero run over 0.05 s with room tone on is a warning.

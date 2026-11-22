@@ -11,7 +11,7 @@ generates narration with Kokoro TTS (Apache-2.0), draws 1080x1920 frames with
 Pillow, encodes one file per scene, joins them, muxes audio, and writes
 video.mp4, captions.srt, cover.png and images/ (one keyframe per scene).
 """
-import json, math, os, subprocess, sys, wave, shutil
+import json, math, os, re, subprocess, sys, wave, shutil, zlib
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -660,13 +660,114 @@ def resolve_times(obj, tts, lead, speech, warn):
     return obj
 
 # ---------- audio ----------
-def tts_scene(text, voice, speed, path, kokoro):
-    s, sr = kokoro.create(text, voice=voice, speed=speed, lang="en-us")
-    s = np.clip(s, -1, 1)
+# Audio direction v1 (2026-11-22). Three subtle, always-on polish steps plus one opt-in:
+#  1) Varied pauses: each sentence is synthesized on its own (Kokoro's fixed 0.25 s sentence_pause is off)
+#     and the gap after it depends on how it ends: "." 0.20-0.38 s, "?" 0.36-0.46 s, "..." 0.45-0.60 s,
+#     "!" 0.24-0.32 s, +0.06 s after a short punch line (<= 6 words). Clause pauses vary 0.07-0.13 s.
+#     Seeded by post_id + scene, so a re-render sounds identical.
+#  2) Scene tails vary 0.28-0.46 s (0.55 s before a payoff/answer scene) instead of a flat 0.35 s.
+#  3) Room-tone bed: a synthesized quiet-room floor (pink noise, no hiss, slow drift) mixed under the
+#     whole video at spec "room_tone_db" (default -50 dBFS RMS; null = off). Pauses never drop to digital zero.
+#  4) Opt-in breaths: "[inhale]" in a scene's "tts" inserts a soft 0.34 s synthetic inhale there.
+#     Max 2 per episode, only before the longest sentence. Markers are stripped from captions/timing.
+#  Optional: spec "voice" may be a blend, e.g. {"af_heart": 0.8, "af_bella": 0.2} (off by default; af_heart is the brand voice).
+BREATH_RE = re.compile(r"\[(?:inhale|breath)[^\]]*\]", re.I)
+SR_TTS = 24000
+
+def clean_tts(text):
+    return re.sub(r"\s{2,}", " ", BREATH_RE.sub(" ", text)).strip()
+
+def resolve_voice(v, kokoro):
+    if isinstance(v, dict):
+        tot = sum(v.values())
+        return sum(kokoro.get_voice_style(k) * (w / tot) for k, w in v.items())
+    return v
+
+def breath_sound(sr, rng, dur=0.34):
+    n = int(dur * sr)
+    F = np.fft.rfft(rng.standard_normal(n)); f = np.fft.rfftfreq(n, 1 / sr)
+    shape = ((f > 250) & (f < 3500)) / (1 + f / 1400)
+    x = np.fft.irfft(F * shape, n)
+    t = np.linspace(0, 1, n)
+    env = np.where(t < 0.72, (t / 0.72) ** 1.6, (1 - t) / 0.28)  # slow draw in, quick release
+    x = x * env
+    return (x / (np.max(np.abs(x)) or 1)).astype(np.float32)
+
+def sentence_gap(sent, rng):
+    s = sent.rstrip()
+    if s.endswith("...") or s.endswith("\u2026"):
+        g = rng.uniform(0.45, 0.60)
+    elif s.endswith("?"):
+        g = rng.uniform(0.36, 0.46)
+    elif s.endswith("!"):
+        g = rng.uniform(0.24, 0.32)
+    else:
+        g = rng.uniform(0.20, 0.38)
+    if len(s.split()) <= 6:
+        g += 0.06
+    return g
+
+def tts_scene(text, voice, speed, path, kokoro, rng=None, info=None):
+    rng = rng or np.random.default_rng(0)
+    items = []
+    for pc in re.split(r"(\[(?:inhale|breath)[^\]]*\])", text, flags=re.I):
+        if not pc.strip():
+            continue
+        if BREATH_RE.fullmatch(pc.strip()):
+            items.append(("breath", None)); continue
+        for snt in re.split(r"(?<=[.!?\u2026])\s+", pc.strip()):
+            if snt.strip():
+                items.append(("say", snt.strip()))
+    chunks, gaps, breaths = [], [], 0
+    for k, (kind, snt) in enumerate(items):
+        nxt = items[k + 1] if k + 1 < len(items) else None
+        if kind == "breath":
+            chunks += [np.zeros(int(0.06 * SR_TTS), np.float32), ("breath", breath_sound(SR_TTS, rng)),
+                       np.zeros(int(0.07 * SR_TTS), np.float32)]
+            breaths += 1
+            continue
+        a, _ = kokoro.create(snt, voice=voice, speed=speed, lang="en-us",
+                             sentence_pause=0.0, clause_pause=float(rng.uniform(0.07, 0.13)))
+        chunks.append(np.asarray(a, np.float32))
+        if nxt is not None and nxt[0] == "say":
+            g = sentence_gap(snt, rng); gaps.append(round(g, 3))
+            chunks.append(np.zeros(int(g * SR_TTS), np.float32))
+    # breaths sit ~23 dB under the speech peak of this scene (Kokoro's output level varies by voice/text)
+    speech_peak = max([float(np.max(np.abs(c))) for c in chunks if not isinstance(c, tuple) and len(c)] or [1.0])
+    chunks = [c[1] * 0.07 * speech_peak if isinstance(c, tuple) else c for c in chunks]
+    s = np.clip(np.concatenate(chunks), -1, 1)
     with wave.open(path, "wb") as w:
-        w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR_TTS)
         w.writeframes((s * 32767).astype("int16").tobytes())
-    return len(s) / sr, sr
+    if info is not None:
+        info["gaps"] = gaps; info["breaths"] = breaths
+    return len(s) / SR_TTS, SR_TTS
+
+def room_tone(n, sr, db, seed):
+    """Quiet-room floor: pink noise, highs rolled off (no hiss), nothing under 40 Hz, slow +/-1 dB drift."""
+    rng = np.random.default_rng(seed)
+    F = np.fft.rfft(rng.standard_normal(n)); f = np.fft.rfftfreq(n, 1 / sr); f[0] = 1.0
+    shape = (1 / np.sqrt(f)) / (1 + (f / 3500) ** 2)
+    shape[f < 40] = 0
+    x = np.fft.irfft(F * shape, n)
+    t = np.arange(n) / sr
+    x *= 10 ** ((0.7 * np.sin(2 * np.pi * t / 7.3) + 0.35 * np.sin(2 * np.pi * t / 2.9 + 1.0)) / 20)
+    x = x / np.sqrt(np.mean(x ** 2)) * 10 ** (db / 20)
+    return x.astype(np.float32)
+
+def audio_stats(video_path):
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", video_path, "-vn", "-ac", "1", "-ar", "48000",
+                          "-f", "f32le", "-"], capture_output=True, check=True).stdout
+    a = np.frombuffer(raw, dtype=np.float32)
+    z = (a == 0).astype(np.int8)
+    longest = 0
+    if z.any():
+        d = np.diff(np.concatenate([[0], z, [0]]))
+        longest = int(np.max(np.flatnonzero(d == -1) - np.flatnonzero(d == 1)))
+    w = 2400  # 50 ms windows
+    rms = np.sqrt(np.mean(a[: len(a) // w * w].reshape(-1, w) ** 2, axis=1) + 1e-20)
+    return dict(longest_digital_zero_s=round(longest / 48000, 3),
+                floor_dbfs_p5=round(float(20 * np.log10(np.percentile(rms, 5))), 1))
 
 STOP_END = {"a", "an", "the", "at", "of", "to", "in", "on", "for", "and", "or", "but", "by", "with",
             "from", "per", "as", "is", "are", "was", "that", "this", "its", "your", "their", "into", "who",
@@ -743,6 +844,14 @@ def main():
     kokoro = Kokoro(os.path.join(tts_dir, "kokoro.onnx"), os.path.join(tts_dir, "voices.bin"))
     voice, speed = spec.get("voice", "af_heart"), spec.get("speed", 1.08)
     lead, tail = 0.15, 0.35
+    seed = zlib.crc32(str(spec.get("post_id", spec_path)).encode())
+    room_db = spec.get("room_tone_db", -50)
+    audio_info = dict(room_tone_db=room_db, scenes=[])
+    nbreath = 0
+    for sc in spec["scenes"]:
+        sc["_tts_raw"] = sc["tts"]
+        nbreath += len(BREATH_RE.findall(sc["tts"]))
+        sc["tts"] = clean_tts(sc["tts"])
 
     # 1) narration per scene -> durations
     timeline, t0 = [], cover_hold
@@ -750,14 +859,29 @@ def main():
         wav = os.path.join(work, f"a{i:02}.wav")
         # Per-scene overrides (Script System v2): "voice" for a second character
         # (quoted myth, viewer question), "speed" for pacing (0.98-1.14 range).
-        sv = sc.get("voice", voice)
+        sv = resolve_voice(sc.get("voice", voice), kokoro)
         ss = max(0.9, min(1.2, float(sc.get("speed", speed))))
-        dur, sr = tts_scene(sc["tts"], sv, ss, wav, kokoro)
-        sdur = round((lead + dur + tail) * FPS) / FPS
+        rng = np.random.default_rng([seed, i])
+        info = {}
+        dur, sr = tts_scene(sc["_tts_raw"], sv, ss, wav, kokoro, rng, info)
+        nxt_vis = spec["scenes"][i + 1]["visual"] if i + 1 < len(spec["scenes"]) else None
+        if "pause_after" in sc:
+            stail = float(sc["pause_after"])
+        elif nxt_vis in ("payoff", "answer"):
+            stail = 0.55
+        elif nxt_vis is None:
+            stail = tail
+        else:
+            stail = float(rng.uniform(0.28, 0.46))
+        info["tail"] = round(stail, 3)
+        audio_info["scenes"].append(info)
+        sdur = round((lead + dur + stail) * FPS) / FPS
         timeline.append(dict(i=i, start=t0, dur=sdur, speech=dur, wav=wav))
         t0 += sdur
     total = t0
     warns = []
+    if nbreath > 2:
+        warns.append(f"{nbreath} [inhale] markers; keep it to 2 per episode, before the longest sentences")
     for sc, tl in zip(spec["scenes"], timeline):
         sc["_p"] = resolve_times(sc.get("params", {}), sc["tts"], lead, tl["speech"], warns)
         sc["_p"]["_dur"] = tl["dur"]
@@ -860,13 +984,34 @@ def main():
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
         w.writeframes((track[: int(total * sr)] * 32767).astype("int16").tobytes())
     tmpv = os.path.join(out, "video.tmp.mp4")
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", silent, "-i", nar, "-map", "0:v", "-map", "1:a", "-c:v", "copy",
-                    "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-shortest",
-                    "-movflags", "+faststart", tmpv], check=True)
+    if room_db is None:
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", silent, "-i", nar, "-map", "0:v", "-map", "1:a", "-c:v", "copy",
+                        "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-shortest",
+                        "-movflags", "+faststart", tmpv], check=True)
+    else:
+        # narration is loudness-normalized first, then the room-tone bed is added at its exact level
+        bed = os.path.join(work, "roomtone.wav")
+        b = room_tone(int(total * 48000), 48000, float(room_db), seed)
+        with wave.open(bed, "wb") as w:
+            w.setnchannels(1); w.setsampwidth(2); w.setframerate(48000)
+            w.writeframes((np.clip(b, -1, 1) * 32767).astype("int16").tobytes())
+        fc = ("[1:a]loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[n];[2:a]aresample=48000[b];"
+              "[n][b]amix=inputs=2:normalize=0:duration=first[a]")
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", silent, "-i", nar, "-i", bed, "-filter_complex", fc,
+                        "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+                        "-shortest", "-movflags", "+faststart", tmpv], check=True)
     os.replace(tmpv, os.path.join(out, "video.mp4"))
+    audio_info.update(audio_stats(os.path.join(out, "video.mp4")), breaths=nbreath)
+    if room_db is not None and audio_info["longest_digital_zero_s"] > 0.05:
+        warns.append(f"audio drops to digital zero for {audio_info['longest_digital_zero_s']} s despite room tone")
     json.dump(dict(total=total, scenes=timeline, cues=cues), open(os.path.join(work, "timeline.json"), "w"), indent=1)
     print(f"rendered {total:.2f}s, {len(cues)} captions")
     write_plan_and_qa(spec, timeline, cues, out, total, warns, cover_path)
+    qp = os.path.join(out, "qa-report.json")
+    if os.path.exists(qp):
+        q = json.load(open(qp)); q["audio"] = audio_info
+        json.dump(q, open(qp, "w"), indent=1)
+    print("audio:", {k: v for k, v in audio_info.items() if k != "scenes"})
     if total <= 61:
         print(f"WARNING: video is {total:.2f}s; it must be longer than 61 s (target 65-90). Lengthen the script and re-render.")
     if total > 90:
