@@ -21,5 +21,23 @@
   "pinned_comment": "Which aviation question should the braincell take next? Drop it below.",
   "is_ai_generated": true,
   "package_folder": "Ready to Upload/2026-11-22_BB-20261122-008_how-does-a-plane-fly-upside-down",
-  "published": null
+  "published": {
+    "instagram": {
+      "url": "https://www.instagram.com/reel/DgDYVCBCAy9/",
+      "media_id": "17897116263435078",
+      "pinned_comment_id": "18156328390532040"
+    },
+    "tiktok": {
+      "url": "https://www.tiktok.com/@bonusbraincell/video/7711054276772121870",
+      "id": "7711054276772121870"
+    },
+    "youtube": {
+      "url": "https://www.youtube.com/watch?v=RkJhwzGqLeU",
+      "id": "RkJhwzGqLeU",
+      "playlist": null,
+      "playlist_note": "pending: Chrome not reachable this run"
+    },
+    "vidiq_post_id": "5c573f05-53c0-4b67-896e-a3ea4a13deb3",
+    "published_at_utc": "2026-11-22T17:52Z"
+  }
 }

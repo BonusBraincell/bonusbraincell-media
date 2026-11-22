@@ -14,6 +14,7 @@ One row per episode, grouped by series. The daily task appends each new episode 
 | Date | Episode | Instagram | TikTok | YouTube |
 |---|---|---|---|---|
 | 2026-11-20 | Why don't satellites fall down? | https://www.instagram.com/reel/Df950x2hseP/ | https://www.tiktok.com/@bonusbraincell/video/7710265228562287903 | https://www.youtube.com/watch?v=8JFL-orE7z4 |
+| 2026-11-22 | How does a plane fly upside down? | https://www.instagram.com/reel/DgDYVCBCAy9/ | https://www.tiktok.com/@bonusbraincell/video/7711054276772121870 | https://www.youtube.com/watch?v=RkJhwzGqLeU |
 
 ## The Fine Print
 | Date | Episode | Instagram | TikTok | YouTube |
