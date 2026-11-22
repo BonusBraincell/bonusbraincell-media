@@ -1,0 +1,8 @@
+{
+  "_note": "Narrator rotation (Rob, 2026-11-22). Each episode gets the next voice: index = days since start_date (slot date, America/New_York) mod len(voices). Repeats every 21 days. A quoted myth/question line uses quote_voice: the next voice in the list of the opposite gender (prefix af/bf = female, am/bm = male). Excluded: am_santa (novelty), am_adam, af_jessica, am_echo, bf_alice, bf_lily, af_nicole (whispery, ~50% slower; swapped for af_river).",
+  "start_date": "2026-11-23",
+  "voices": ["af_heart", "am_fenrir", "bf_emma", "am_michael", "af_bella", "bm_george", "af_river",
+             "am_puck", "af_aoede", "bm_fable", "af_kore", "am_onyx", "af_sarah", "bm_lewis",
+             "af_alloy", "am_eric", "bf_isabella", "am_liam", "af_nova", "bm_daniel", "af_sky"],
+  "fallback": "af_heart"
+}

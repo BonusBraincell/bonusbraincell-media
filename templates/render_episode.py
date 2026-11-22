@@ -677,6 +677,24 @@ SR_TTS = 24000
 def clean_tts(text):
     return re.sub(r"\s{2,}", " ", BREATH_RE.sub(" ", text)).strip()
 
+VOICES_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)), "voices.json")
+
+def narrator_for(spec):
+    """Rotation narrator for this episode's slot date (spec "slot_date" YYYY-MM-DD, else from post_id BB-YYYYMMDD-NNN)."""
+    import datetime as _dt
+    cfg = json.load(open(VOICES_JSON))
+    d = spec.get("slot_date")
+    if not d and str(spec.get("post_id", "")).startswith("BB-"):
+        x = spec["post_id"].split("-")[1]; d = f"{x[:4]}-{x[4:6]}-{x[6:8]}"
+    if not d:
+        return cfg["fallback"], None
+    vs = cfg["voices"]
+    i = (_dt.date.fromisoformat(d) - _dt.date.fromisoformat(cfg["start_date"])).days % len(vs)
+    nar = vs[i]
+    female = nar[:2] in ("af", "bf")
+    quote = next(vs[(i + k) % len(vs)] for k in range(1, len(vs)) if (vs[(i + k) % len(vs)][:2] in ("af", "bf")) != female)
+    return nar, quote
+
 def resolve_voice(v, kokoro):
     if isinstance(v, dict):
         tot = sum(v.values())
@@ -842,11 +860,14 @@ def main():
     from kokoro_onnx import Kokoro
     tts_dir = spec.get("tts_dir", "/home/claude/tts")
     kokoro = Kokoro(os.path.join(tts_dir, "kokoro.onnx"), os.path.join(tts_dir, "voices.bin"))
-    voice, speed = spec.get("voice", "af_heart"), spec.get("speed", 1.08)
+    voice, speed = spec.get("voice", "rotation"), spec.get("speed", 1.08)
+    quote_voice = None
+    if voice == "rotation":  # default since 2026-11-23: a different narrator each episode (templates/voices.json)
+        voice, quote_voice = narrator_for(spec)
     lead, tail = 0.15, 0.35
     seed = zlib.crc32(str(spec.get("post_id", spec_path)).encode())
     room_db = spec.get("room_tone_db", -50)
-    audio_info = dict(room_tone_db=room_db, scenes=[])
+    audio_info = dict(room_tone_db=room_db, narrator=voice, quote_voice=quote_voice, scenes=[])
     nbreath = 0
     for sc in spec["scenes"]:
         sc["_tts_raw"] = sc["tts"]
@@ -859,7 +880,10 @@ def main():
         wav = os.path.join(work, f"a{i:02}.wav")
         # Per-scene overrides (Script System v2): "voice" for a second character
         # (quoted myth, viewer question), "speed" for pacing (0.98-1.14 range).
-        sv = resolve_voice(sc.get("voice", voice), kokoro)
+        sv0 = sc.get("voice", voice)
+        if sv0 == "quote":
+            sv0 = quote_voice or "am_michael"
+        sv = resolve_voice(sv0, kokoro)
         ss = max(0.9, min(1.2, float(sc.get("speed", speed))))
         rng = np.random.default_rng([seed, i])
         info = {}

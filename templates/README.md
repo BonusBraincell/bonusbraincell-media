@@ -38,12 +38,12 @@ Also needs ffmpeg, Pillow, numpy and the Inter font (all present in the Claude c
 ## Caption chunking (Nov 16)
 Burned-in captions follow sentences and clauses, up to two lines (~42 characters, max ~56), never split abbreviations like U.S., never end on a weak word (at, the, of, you, than, what…) or a possessive ("store's"), and never leave a one-word orphan. Nov 20: a `|` in a scene's caption forces a chunk break there (never shown), and the two-line balancer avoids a top line ending on a weak word and one-word lines.
 
-## Voice variation (Script System v2, Nov 16)
-The host voice stays `af_heart` (brand recognition). Variety comes from three levers, set per scene in the episode spec:
-- `"speed"`: pacing per beat. Hook 1.10–1.12, mechanism 1.04–1.06, example 1.08, payoff line 1.00–1.02 (slower so it lands). Clamped to 0.9–1.2.
-- `"voice"`: a second Kokoro voice for a quoted line only (a myth "people say…", a viewer question, a historical quote). Use `am_michael` or `bf_emma`; never more than 2 scenes per episode, and never for the payoff line.
+## Voice variation (rotating narrator from 2026-11-23)
+Each episode gets a different narrator from the 21 Kokoro voices in `voices.json` (Rob, Nov 22): index = days since `start_date` mod 21, from the spec's `slot_date` (or the post_id date). Repeats every 21 days. Leave spec-level `"voice"` out (or `"rotation"`); an explicit voice name overrides. The narrator is recorded in `qa-report.json` → `audio.narrator`; copy it into `post.json` as `narrator`.
+- `"speed"` per scene: pacing per beat. Hook 1.10–1.12, mechanism 1.04–1.06, example 1.08, payoff line 1.00–1.02. Clamped to 0.9–1.2. Voices differ in natural rate (~3.8–4.8 s for the same line), so check the length warning and add or trim a line rather than pushing speed.
+- Scene `"voice": "quote"`: a quoted line only (myth, viewer question, historical quote) is read by `audio.quote_voice` (next voice of the opposite gender). Max 2 scenes; never the payoff line.
 - Sentence rhythm in the script itself: mix one short punch line (≤6 words) into every 2–3 longer lines.
-Omit both keys and the scene uses the spec-level `voice`/`speed` as before.
+Every voice is still synthetic: AI label and the "synthetic (AI) voice" description line stay on. Voice sampler: `Production/pilots/2026-11-22_audio-v1/narrator-sampler.mp3` (all 21, in rotation order).
 
 ## Cover card fit (Nov 21)
 make_cover.py now fits each tag card's value to the card width minus 150 px, so long words no longer touch the between-circle.
@@ -57,5 +57,5 @@ Goal: narration that sounds recorded, not pasted. All of it is subtle; the AI la
 - **Room-tone bed (automatic):** a synthesized quiet-room floor (pink noise, no hiss, slow drift; no downloaded audio, so no license to track) under the whole video at `"room_tone_db": -50` (dBFS RMS). `null` turns it off. Pauses never hit digital zero.
 - **Breaths (opt-in, max 2):** `[inhale]` in a scene's `tts` inserts a soft 0.34 s inhale ~23 dB under the speech peak. Put it only before the longest sentence of the script. Markers are stripped from captions and timing phrases.
 - **Script punctuation is direction:** `...` = a held beat before a reveal, `?` = a real question pause, short sentences = punch. Use line-level variety, not uniform periods.
-- **Voice blend (available, off):** spec `"voice": {"af_heart": 0.8, "af_bella": 0.2}` blends Kokoro styles. Not used: `af_heart` is the brand voice. No pitch or tempo shifting on top of the 1.08× house speed.
+- **Voice blend (available, off):** spec `"voice": {"af_heart": 0.8, "af_bella": 0.2}` blends Kokoro styles. Not used; the narrator rotates instead. No pitch or tempo shifting on top of the house speed.
 - **QA:** `qa-report.json` → `audio` block: `longest_digital_zero_s` (should be 0), `floor_dbfs_p5` (≈ −50), breaths, per-scene gaps and tails. A zero run over 0.05 s with room tone on is a warning.
