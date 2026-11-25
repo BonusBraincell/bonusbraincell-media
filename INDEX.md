@@ -9,6 +9,7 @@ One row per episode, grouped by series. The daily task appends each new episode 
 | 2026-11-16 | Who takes delivery on oil futures? | https://www.instagram.com/reel/DfzovpmFubI/ | https://www.tiktok.com/@bonusbraincell/video/7708779930615614734 | https://www.youtube.com/watch?v=6GOf2MCaA8E |
 | 2026-11-17 | What happens when you tap your card? | https://www.instagram.com/reel/Df2EcmExKt2/ | https://www.tiktok.com/@bonusbraincell/video/7709136071119949069 | https://www.youtube.com/watch?v=GbJ37vn2LVE |
 | 2026-11-19 | What's an IPO lock-up? | https://www.instagram.com/reel/Df7Me2LREyq/ | https://www.tiktok.com/@bonusbraincell/video/7709874865402023181 | https://www.youtube.com/watch?v=SyVgEBXMRfg |
+| 2026-11-25 | Who actually pays a tariff? | https://www.instagram.com/reel/DgKraKfMIDn/ | https://www.tiktok.com/@bonusbraincell/video/7712106144705121549 | https://www.youtube.com/watch?v=4FAok8BeDMI |
 
 ## How Does That Even Work? · YouTube playlist: https://www.youtube.com/playlist?list=PLU-eG_SEs3ZY
 | Date | Episode | Instagram | TikTok | YouTube |
