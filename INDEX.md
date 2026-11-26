@@ -19,11 +19,12 @@ One row per episode, grouped by series. The daily task appends each new episode 
 | 2026-11-23 | How does an aircraft carrier stop a landing jet? | https://www.instagram.com/reel/DgFh-HXROpn/ | https://www.tiktok.com/@bonusbraincell/video/7711364285510765837 | https://www.youtube.com/watch?v=hva04dEZ5cM |
 | 2026-11-24 | Why do U.S. rockets launch east from Florida? | https://www.instagram.com/reel/DgIVkDVTRWT/ | https://www.tiktok.com/@bonusbraincell/video/7711768588687772942 | https://www.youtube.com/watch?v=22EC_6jSKxM |
 
-## The Fine Print
+## The Fine Print · YouTube playlist: https://www.youtube.com/playlist?list=PLMZBO_ORWou4
 | Date | Episode | Instagram | TikTok | YouTube |
 |---|---|---|---|---|
 | 2026-11-18 | Why does the U.S. have time zones? | https://www.instagram.com/reel/Df4402vszMQ/ | https://www.tiktok.com/@bonusbraincell/video/7709542237566274829 | https://www.youtube.com/watch?v=_58x8DHgYeY |
 | 2026-11-21 | Why do ships fly Liberia's or Panama's flag? | https://www.instagram.com/reel/DgBYbkBJI-b/ | https://www.tiktok.com/@bonusbraincell/video/7710766370878770462 | https://www.youtube.com/watch?v=GMRZd9-KDrU |
+| 2026-11-26 | Why is Thanksgiving on the fourth Thursday? | https://www.instagram.com/reel/DgNRKf4u1si/ | https://www.tiktok.com/@bonusbraincell/video/7712479284287245582 | https://www.youtube.com/watch?v=bWFxnpiY5r4 |
 
 ## You Asked
 (no episodes yet)
