@@ -20,7 +20,7 @@ Illustrative items (labeled on screen): the street, buildings, cars and officer 
 
 ## Fact-check
 - Pass 1 (core claim, before scripting): PASS — Britannica + History.com + NPR + ADS-L (PR News 1961; Barrett 1994; Rochester 1961; 1957 workday usage noted, not used).
-- Pass 2 (independent agent on final script, on-screen text, cover, captions, description, ledger): see post.json qa.fact_check.
+- Pass 2 (independent agent, fresh context, re-opened all sources): round 1 FAIL (3 copy wordings: one-liner 'slang for a traffic jam'; 'in the early 1960s' -> 'by'; 'spread only in the late 1980s' -> 'caught on'), fixed; round 2 PASS. 21 claims. Swaps none.
 
 ## Asset provenance
 - Visuals: all drawn in code (Pillow) for this episode (episodes/2026-11-27_black-friday/scenes.py); generic buildings, faceless officer figure, no logos, no real people, no third-party artwork.
