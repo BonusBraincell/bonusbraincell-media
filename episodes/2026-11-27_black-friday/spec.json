@@ -1,0 +1,328 @@
+{
+ "workflow": "v4",
+ "title": "Why is it called Black Friday?",
+ "series": "Follow the Money",
+ "post_id": "BB-20261127-013",
+ "slot_date": "2026-11-27",
+ "environment": "daylight",
+ "scene_module": "scenes.py",
+ "opening": "motion",
+ "speed": 1.05,
+ "record": {
+  "question": "Why is it called Black Friday?",
+  "audience_reason": "It is Black Friday today; almost everyone has heard the 'stores get in the black' explanation, and the real origin (police slang about traffic) is a satisfying reversal people repeat.",
+  "editorial_contribution": {
+   "type": "resolved contradiction/misconception",
+   "statement": "We put the two stories in their real order: Philadelphia police slang for the post-Thanksgiving crush by the early 1960s, the merchants' failed 'Big Friday' rename, and the red-to-black profit story catching on in the late 1980s, and we show the crowd-to-gridlock cause on a miniature street."
+  },
+  "narrative_structure": "myth_then_mechanism",
+  "animation_approach": "MINIATURE_WORLD",
+  "secondary_approach": "DATA_STORY",
+  "custom_scene": "A paper-cutout downtown street: a shop ledger flips red to black and is stamped CAME LATER; suburban cars stream in and slow, an Army-Navy pennant arrives and the lanes lock; a faceless traffic officer works the corner while jams, accidents and shoplifters pop up and a long-shift clock runs; BLACK FRIDAY is stamped on the street; a BIG FRIDAY banner rises and falls; a two-stop timeline carries the name from early 1960s to late 1980s where the profit backstory is attached.",
+  "cover_composition": {
+   "type": "miniature_world",
+   "layout": "top",
+   "environment": "daylight",
+   "text_amount": "two short lines",
+   "main_object": "gridlocked paper street with a traffic officer and a BLACK FRIDAY stamp"
+  },
+  "sources_and_assumptions": "See sources-and-rights.md. Assumptions: 'early 1960s' and 'late 1980s' are the sources' own ranges; we do not claim Philadelphia police were the only or first users of the phrase (a Rochester item from Dec 1, 1961 also has police using it), only that the shopping-day name traces to police slang there. The street is a generic illustration, labeled on screen.",
+  "asset_provenance": "All visuals drawn in code (Pillow) for this episode; generic buildings, faceless officer figure, no logos or real people; Inter (OFL); narration Kokoro (Apache-2.0); sound effects and music bed synthesized (templates/sfx.py).",
+  "similar_recent_episodes": [
+   "BB-20261126-012 Why is Thanksgiving on the fourth Thursday? (holiday date hook; that was a rule/timeline, this is a name origin myth on a street)",
+   "Cover preview 2026-11-27 (planned art reused as living cover)"
+  ],
+  "render_review_status": "qa_passed (48.4 s, qa-report pass_, fact-check PASS r2, editorial gate PASS)"
+ },
+ "scenes": [
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.06,
+   "subject": "downtown street, shop ledger flipping IN THE RED -> IN THE BLACK, chip 'the story you've heard'",
+   "changes": [
+    "0.0s street + ledger + traffic moving",
+    "ledger flips red->black on 'out of the red'"
+   ],
+   "explain": {
+    "understand": "the popular explanation: stores' books go from red ink to black ink",
+    "objects": "street, ledger, cars",
+    "change": "ledger bar flips red to black",
+    "cause": "narration states the myth",
+    "text": [
+     "STORE LEDGER",
+     "IN THE RED / IN THE BLACK",
+     "the story you've heard"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "out of the red",
+     "sound": "register"
+    }
+   ],
+   "tts": "You've probably heard Black Friday is the day stores finally get out of the red.",
+   "caption": "You've probably heard|Black Friday|is the day stores|finally get out|of the red.",
+   "params": {
+    "fn": "bf_hook",
+    "flip_at": "out of the red"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "cut",
+   "speed": 1.04,
+   "subject": "ledger stamped CAME LATER; a traffic officer slides in",
+   "changes": [
+    "stamp on 'older'",
+    "officer slides in on 'police'"
+   ],
+   "explain": {
+    "understand": "the profit story is not the origin; the police are",
+    "objects": "ledger, stamp, officer",
+    "change": "stamp lands, officer arrives",
+    "cause": "the real lead is introduced",
+    "text": [
+     "CAME LATER",
+     "police"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "older",
+     "sound": "stamp"
+    }
+   ],
+   "tts": "Nice story. But the name is older... and it came from the police.",
+   "caption": "Nice story.|But the name is older...|and it came|from the police.",
+   "params": {
+    "fn": "bf_myth",
+    "stamp_at": "older",
+    "police_at": "police"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_left",
+   "speed": 1.05,
+   "subject": "the street fills with cars arriving from the suburbs",
+   "changes": [
+    "place/date chip",
+    "'FROM THE SUBURBS' sign on 'suburban'",
+    "traffic density rises"
+   ],
+   "explain": {
+    "understand": "crowds of shoppers and tourists arrive downtown on the day after Thanksgiving",
+    "objects": "street, cars, sign",
+    "change": "cars multiply and slow",
+    "cause": "suburban shoppers and tourists coming into the city",
+    "text": [
+     "PHILADELPHIA · EARLY 1960s",
+     "FROM THE SUBURBS",
+     "shoppers + tourists",
+     "Illustration: a generic downtown street"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "pour downtown",
+     "sound": "whoosh"
+    }
+   ],
+   "tts": "Philadelphia, early 1960s. The day after Thanksgiving, suburban shoppers and tourists pour downtown.",
+   "caption": "Philadelphia,|early 1960s.|The day after Thanksgiving,|suburban shoppers|and tourists|pour downtown.",
+   "params": {
+    "fn": "bf_street",
+    "sub_at": "suburban"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "cut",
+   "speed": 1.04,
+   "subject": "Army-Navy pennant over the street; lanes lock solid",
+   "changes": [
+    "pennant unfurls",
+    "SATURDAY · in some years chip",
+    "GRIDLOCK chip on 'Gridlock'"
+   ],
+   "explain": {
+    "understand": "a big game the next day adds even more visitors",
+    "objects": "pennant, cars",
+    "change": "traffic stops",
+    "cause": "more visitors for the weekend game",
+    "text": [
+     "ARMY–NAVY GAME",
+     "SATURDAY · in some years",
+     "GRIDLOCK"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "Gridlock",
+     "sound": "beep"
+    }
+   ],
+   "tts": "Some years, the Army-Navy game is that Saturday too. Gridlock.",
+   "caption": "Some years,|the Army-Navy game|is that Saturday too.|Gridlock.",
+   "params": {
+    "fn": "bf_game",
+    "grid_at": "Gridlock"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "cut",
+   "speed": 1.04,
+   "subject": "officer at the jammed corner; three problems pop; long-shift clock; BLACK FRIDAY stamped",
+   "changes": [
+    "chips on each problem",
+    "clock on 'longer shifts'",
+    "stamp on 'Black Friday'"
+   ],
+   "explain": {
+    "understand": "the police name the day for the chaos they handle",
+    "objects": "officer, cars, chips, clock, stamp",
+    "change": "problems stack up, then the nickname lands",
+    "cause": "the crowds create work for police",
+    "text": [
+     "traffic jams",
+     "accidents",
+     "shoplifters",
+     "longer shifts",
+     "BLACK FRIDAY"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "call it Black Friday",
+     "sound": "stamp"
+    }
+   ],
+   "tts": "Traffic jams, accidents, shoplifters. Officers work longer shifts. They call it Black Friday.",
+   "caption": "Traffic jams,|accidents,|shoplifters.|Officers work|longer shifts.|They call it|Black Friday.",
+   "params": {
+    "fn": "bf_police",
+    "jam_at": "Traffic jams",
+    "acc_at": "accidents",
+    "shop_at": "shoplifters",
+    "shift_at": "longer shifts",
+    "name_at": "call it Black Friday"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_up",
+   "speed": 1.05,
+   "subject": "BIG FRIDAY banner hoisted across the street, then it peels off",
+   "changes": [
+    "banner rises on 'Big Friday'",
+    "banner drops on 'doesn't stick'",
+    "chip 'didn't stick'"
+   ],
+   "explain": {
+    "understand": "merchants tried to rename the day and failed",
+    "objects": "banner, poles, street",
+    "change": "banner rises then falls",
+    "cause": "the new name never caught on",
+    "text": [
+     "BIG FRIDAY",
+     "the merchants' name",
+     "didn't stick"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "doesn't stick",
+     "sound": "thump"
+    }
+   ],
+   "tts": "Merchants don't like it. They push a friendlier name: Big Friday. It doesn't stick.",
+   "caption": "Merchants|don't like it.|They push|a friendlier name:|Big Friday.|It doesn't stick.",
+   "params": {
+    "fn": "bf_banner",
+    "big_at": "Big Friday",
+    "fail_at": "doesn't stick"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.05,
+   "subject": "two-stop timeline early 1960s -> late 1980s; the new-backstory ledger flips at the end",
+   "changes": [
+    "track fills to LATE 1980s on 'gone national'",
+    "ledger appears on 'happier backstory' and flips"
+   ],
+   "explain": {
+    "understand": "the name spread nationally and the profit story was attached afterwards",
+    "objects": "timeline, car marker, small ledger",
+    "change": "marker travels, ledger flips",
+    "cause": "order of events",
+    "text": [
+     "WHERE THE NAME WENT",
+     "EARLY 1960s",
+     "Philadelphia police slang",
+     "LATE 1980s",
+     "used nationwide",
+     "THE NEW BACKSTORY"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "gone national",
+     "sound": "swoosh_up"
+    }
+   ],
+   "tts": "By the late 1980s, the name has gone national, and stores give it a happier backstory: red ink to black.",
+   "caption": "By the late 1980s,|the name|has gone national,|and stores give it|a happier backstory:|red ink to black.",
+   "params": {
+    "fn": "bf_timeline",
+    "nat_at": "gone national",
+    "story_at": "happier backstory"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.0,
+   "subject": "back on the street: ring around the jam, green street sign BLACK FRIDAY",
+   "changes": [
+    "ring appears",
+    "slow push in"
+   ],
+   "explain": {
+    "understand": "the takeaway image: the name belongs to the jam",
+    "objects": "street sign, ring, cars",
+    "change": "camera pushes in",
+    "cause": "payoff",
+    "text": [
+     "BLACK FRIDAY",
+     "named for a traffic jam"
+    ]
+   },
+   "sfx": [
+    {
+     "at": 0.2,
+     "sound": "chime"
+    }
+   ],
+   "tts": "Today's Black Friday was named for a traffic jam. Follow for one bonus braincell per scroll.",
+   "caption": "Today's|Black Friday|was named|for a traffic jam.|Follow for one|bonus braincell|per scroll.",
+   "params": {
+    "fn": "bf_payoff"
+   },
+   "pause_after": 0.4
+  }
+ ],
+ "caption_style": "kinetic",
+ "music": {
+  "mood": "bright",
+  "bpm": 96,
+  "peak_db": -30
+ },
+ "duration_range": [
+  30,
+  55
+ ]
+}

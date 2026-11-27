@@ -1,0 +1,10 @@
+{
+ "spec": "spec.json",
+ "title": "Why is it called Black Friday?",
+ "verdict": "PASS",
+ "fails": [],
+ "warnings": [],
+ "notes": [
+  "114 narrated words"
+ ]
+}

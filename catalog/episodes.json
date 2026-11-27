@@ -1,23 +1,335 @@
 {
  "_doc": "Catalog for novelty checks (templates/check_episode.py). One entry per published or planned v4 episode. Retro-tagged 2026-11-26 from the published scripts, specs and covers. Fields: premise keywords (what the question is really about), narrative_structure, animation_approach, cover_composition, opener_pattern, ending_pattern, environment.",
- "structures": ["journey", "mystery_resolved_through_evidence", "comparison_two_worlds", "consequence_unfolding", "myth_then_mechanism", "countdown_or_timeline", "calculation_reveal", "build_up_from_parts", "question_from_viewer"],
- "approaches": ["SYSTEM_CUTAWAY", "FOLLOW_THE_JOURNEY", "COUNTERFACTUAL_MODEL", "TWO_WORLDS", "SCALE_REVEAL", "VISUAL_CASE_FILE", "MINIATURE_WORLD", "DATA_STORY"],
- "cover_compositions": ["big_number_card", "two_tag_cards", "icon_card", "object_hero", "document_still_life", "split_two_worlds", "map_route", "macro_closeup", "scale_contrast", "diagram_hero"],
+ "structures": [
+  "journey",
+  "mystery_resolved_through_evidence",
+  "comparison_two_worlds",
+  "consequence_unfolding",
+  "myth_then_mechanism",
+  "countdown_or_timeline",
+  "calculation_reveal",
+  "build_up_from_parts",
+  "question_from_viewer"
+ ],
+ "approaches": [
+  "SYSTEM_CUTAWAY",
+  "FOLLOW_THE_JOURNEY",
+  "COUNTERFACTUAL_MODEL",
+  "TWO_WORLDS",
+  "SCALE_REVEAL",
+  "VISUAL_CASE_FILE",
+  "MINIATURE_WORLD",
+  "DATA_STORY"
+ ],
+ "cover_compositions": [
+  "big_number_card",
+  "two_tag_cards",
+  "icon_card",
+  "object_hero",
+  "document_still_life",
+  "split_two_worlds",
+  "map_route",
+  "macro_closeup",
+  "scale_contrast",
+  "diagram_hero"
+ ],
  "episodes": [
-  {"id": "BB-20261116-001", "date": "2026-11-15", "title": "Who sets an IPO's first price?", "series": "Follow the Money", "premise": ["ipo", "stock", "offer price", "auction"], "narrative_structure": "myth_then_mechanism", "animation_approach": "v3_infographic", "cover_composition": "two_tag_cards", "opener_pattern": "context_then_twist", "ending_pattern": "contrast_couplet", "environment": "navy_classic"},
-  {"id": "BB-20261116-002", "date": "2026-11-16", "title": "Who takes delivery on oil futures?", "series": "Follow the Money", "premise": ["oil", "futures", "delivery", "commodities"], "narrative_structure": "myth_then_mechanism", "animation_approach": "v3_infographic", "cover_composition": "big_number_card", "opener_pattern": "surprising_claim", "ending_pattern": "contrast_couplet", "environment": "navy_classic"},
-  {"id": "BB-20261117-003", "date": "2026-11-17", "title": "What happens when you tap your card?", "series": "Follow the Money", "premise": ["card", "payments", "authorization", "settlement"], "narrative_structure": "journey", "animation_approach": "v3_infographic", "cover_composition": "big_number_card", "opener_pattern": "everyday_action_and", "ending_pattern": "contrast_couplet", "environment": "navy_classic"},
-  {"id": "BB-20261118-004", "date": "2026-11-18", "title": "Why does the U.S. have time zones?", "series": "The Fine Print", "premise": ["time", "time zones", "railroads", "clocks"], "narrative_structure": "countdown_or_timeline", "animation_approach": "v3_infographic", "cover_composition": "big_number_card", "opener_pattern": "date_hook", "ending_pattern": "contrast_couplet", "environment": "navy_classic"},
-  {"id": "BB-20261119-005", "date": "2026-11-19", "title": "What's an IPO lock-up?", "series": "Follow the Money", "premise": ["ipo", "stock", "lock-up", "insiders"], "narrative_structure": "myth_then_mechanism", "animation_approach": "v3_infographic", "cover_composition": "big_number_card", "opener_pattern": "surprising_claim", "ending_pattern": "contrast_couplet", "environment": "navy_classic"},
-  {"id": "BB-20261120-006", "date": "2026-11-20", "title": "Why don't satellites fall down?", "series": "How Does That Even Work?", "premise": ["orbit", "satellites", "gravity", "space station"], "narrative_structure": "myth_then_mechanism", "animation_approach": "v3_infographic", "cover_composition": "big_number_card", "opener_pattern": "question_then_answer", "ending_pattern": "contrast_couplet", "environment": "navy_classic"},
-  {"id": "BB-20261121-007", "date": "2026-11-21", "title": "Why do ships fly Liberia's or Panama's flag?", "series": "The Fine Print", "premise": ["ships", "flags", "registry", "shipping"], "narrative_structure": "myth_then_mechanism", "animation_approach": "v3_infographic", "cover_composition": "two_tag_cards", "opener_pattern": "everyday_action_and", "ending_pattern": "contrast_couplet", "environment": "navy_classic"},
-  {"id": "BB-20261122-008", "date": "2026-11-22", "title": "How does a plane fly upside down?", "series": "How Does That Even Work?", "premise": ["aviation", "wings", "lift", "angle of attack"], "narrative_structure": "myth_then_mechanism", "animation_approach": "v3_infographic", "cover_composition": "two_tag_cards", "opener_pattern": "everyday_action_and", "ending_pattern": "contrast_couplet", "environment": "navy_classic"},
-  {"id": "BB-20261123-009", "date": "2026-11-23", "title": "How does an aircraft carrier stop a landing jet?", "series": "How Does That Even Work?", "premise": ["aviation", "carrier", "arresting wire", "navy"], "narrative_structure": "build_up_from_parts", "animation_approach": "v3_infographic", "cover_composition": "big_number_card", "opener_pattern": "everyday_action_and", "ending_pattern": "contrast_couplet", "environment": "navy_classic"},
-  {"id": "BB-20261124-010", "date": "2026-11-24", "title": "Why do U.S. rockets launch east from Florida?", "series": "How Does That Even Work?", "premise": ["rockets", "launch", "earth rotation", "space"], "narrative_structure": "calculation_reveal", "animation_approach": "v3_infographic", "cover_composition": "big_number_card", "opener_pattern": "everyday_action_and", "ending_pattern": "contrast_couplet", "environment": "navy_classic"},
-  {"id": "BB-20261125-011", "date": "2026-11-25", "title": "Who actually pays a tariff?", "series": "Follow the Money", "premise": ["tariffs", "trade", "imports", "customs"], "narrative_structure": "journey", "animation_approach": "v3_infographic", "cover_composition": "icon_card", "opener_pattern": "everyday_action_and", "ending_pattern": "so_remember_contrast", "environment": "navy_classic"},
-  {"id": "BB-20261126-012", "date": "2026-11-26", "title": "Why is Thanksgiving on the fourth Thursday?", "series": "The Fine Print", "premise": ["thanksgiving", "calendar", "law", "holiday"], "narrative_structure": "countdown_or_timeline", "animation_approach": "v3_infographic", "cover_composition": "two_tag_cards", "opener_pattern": "date_hook", "ending_pattern": "so_remember_contrast", "environment": "navy_classic"},
-  {"id": "PLAN-20261202-windows", "date": "2026-12-02", "title": "Why are airplane windows rounded?", "series": "How Does That Even Work?", "premise": ["aviation", "windows", "metal fatigue", "stress concentration", "comet"], "narrative_structure": "mystery_resolved_through_evidence", "animation_approach": "VISUAL_CASE_FILE", "cover_composition": "document_still_life", "opener_pattern": "case_opening", "ending_pattern": "action_for_viewer", "environment": "case_file", "status": "v4 demo"},
-  {"id": "PLAN-20261203-leapsecond", "date": "2026-12-03", "title": "Why are clocks dropping the leap second?", "series": "The Fine Print", "premise": ["time", "leap second", "earth rotation", "atomic clocks", "utc"], "narrative_structure": "comparison_two_worlds", "animation_approach": "TWO_WORLDS", "cover_composition": "split_two_worlds", "opener_pattern": "two_things_disagree", "ending_pattern": "permission_reveal", "environment": "two_skies", "status": "v4 demo"},
-  {"id": "PLAN-20261204-nickel", "date": "2026-12-04", "title": "Why does a nickel cost 13 cents to make?", "series": "Follow the Money", "premise": ["coins", "nickel", "mint", "seigniorage", "cost"], "narrative_structure": "journey", "animation_approach": "FOLLOW_THE_JOURNEY", "cover_composition": "object_hero", "opener_pattern": "object_with_price", "ending_pattern": "image_to_remember", "environment": "mint_floor", "status": "v4 demo"}
+  {
+   "id": "BB-20261116-001",
+   "date": "2026-11-15",
+   "title": "Who sets an IPO's first price?",
+   "series": "Follow the Money",
+   "premise": [
+    "ipo",
+    "stock",
+    "offer price",
+    "auction"
+   ],
+   "narrative_structure": "myth_then_mechanism",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "two_tag_cards",
+   "opener_pattern": "context_then_twist",
+   "ending_pattern": "contrast_couplet",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "BB-20261116-002",
+   "date": "2026-11-16",
+   "title": "Who takes delivery on oil futures?",
+   "series": "Follow the Money",
+   "premise": [
+    "oil",
+    "futures",
+    "delivery",
+    "commodities"
+   ],
+   "narrative_structure": "myth_then_mechanism",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "big_number_card",
+   "opener_pattern": "surprising_claim",
+   "ending_pattern": "contrast_couplet",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "BB-20261117-003",
+   "date": "2026-11-17",
+   "title": "What happens when you tap your card?",
+   "series": "Follow the Money",
+   "premise": [
+    "card",
+    "payments",
+    "authorization",
+    "settlement"
+   ],
+   "narrative_structure": "journey",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "big_number_card",
+   "opener_pattern": "everyday_action_and",
+   "ending_pattern": "contrast_couplet",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "BB-20261118-004",
+   "date": "2026-11-18",
+   "title": "Why does the U.S. have time zones?",
+   "series": "The Fine Print",
+   "premise": [
+    "time",
+    "time zones",
+    "railroads",
+    "clocks"
+   ],
+   "narrative_structure": "countdown_or_timeline",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "big_number_card",
+   "opener_pattern": "date_hook",
+   "ending_pattern": "contrast_couplet",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "BB-20261119-005",
+   "date": "2026-11-19",
+   "title": "What's an IPO lock-up?",
+   "series": "Follow the Money",
+   "premise": [
+    "ipo",
+    "stock",
+    "lock-up",
+    "insiders"
+   ],
+   "narrative_structure": "myth_then_mechanism",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "big_number_card",
+   "opener_pattern": "surprising_claim",
+   "ending_pattern": "contrast_couplet",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "BB-20261120-006",
+   "date": "2026-11-20",
+   "title": "Why don't satellites fall down?",
+   "series": "How Does That Even Work?",
+   "premise": [
+    "orbit",
+    "satellites",
+    "gravity",
+    "space station"
+   ],
+   "narrative_structure": "myth_then_mechanism",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "big_number_card",
+   "opener_pattern": "question_then_answer",
+   "ending_pattern": "contrast_couplet",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "BB-20261121-007",
+   "date": "2026-11-21",
+   "title": "Why do ships fly Liberia's or Panama's flag?",
+   "series": "The Fine Print",
+   "premise": [
+    "ships",
+    "flags",
+    "registry",
+    "shipping"
+   ],
+   "narrative_structure": "myth_then_mechanism",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "two_tag_cards",
+   "opener_pattern": "everyday_action_and",
+   "ending_pattern": "contrast_couplet",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "BB-20261122-008",
+   "date": "2026-11-22",
+   "title": "How does a plane fly upside down?",
+   "series": "How Does That Even Work?",
+   "premise": [
+    "aviation",
+    "wings",
+    "lift",
+    "angle of attack"
+   ],
+   "narrative_structure": "myth_then_mechanism",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "two_tag_cards",
+   "opener_pattern": "everyday_action_and",
+   "ending_pattern": "contrast_couplet",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "BB-20261123-009",
+   "date": "2026-11-23",
+   "title": "How does an aircraft carrier stop a landing jet?",
+   "series": "How Does That Even Work?",
+   "premise": [
+    "aviation",
+    "carrier",
+    "arresting wire",
+    "navy"
+   ],
+   "narrative_structure": "build_up_from_parts",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "big_number_card",
+   "opener_pattern": "everyday_action_and",
+   "ending_pattern": "contrast_couplet",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "BB-20261124-010",
+   "date": "2026-11-24",
+   "title": "Why do U.S. rockets launch east from Florida?",
+   "series": "How Does That Even Work?",
+   "premise": [
+    "rockets",
+    "launch",
+    "earth rotation",
+    "space"
+   ],
+   "narrative_structure": "calculation_reveal",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "big_number_card",
+   "opener_pattern": "everyday_action_and",
+   "ending_pattern": "contrast_couplet",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "BB-20261125-011",
+   "date": "2026-11-25",
+   "title": "Who actually pays a tariff?",
+   "series": "Follow the Money",
+   "premise": [
+    "tariffs",
+    "trade",
+    "imports",
+    "customs"
+   ],
+   "narrative_structure": "journey",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "icon_card",
+   "opener_pattern": "everyday_action_and",
+   "ending_pattern": "so_remember_contrast",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "BB-20261126-012",
+   "date": "2026-11-26",
+   "title": "Why is Thanksgiving on the fourth Thursday?",
+   "series": "The Fine Print",
+   "premise": [
+    "thanksgiving",
+    "calendar",
+    "law",
+    "holiday"
+   ],
+   "narrative_structure": "countdown_or_timeline",
+   "animation_approach": "v3_infographic",
+   "cover_composition": "two_tag_cards",
+   "opener_pattern": "date_hook",
+   "ending_pattern": "so_remember_contrast",
+   "environment": "navy_classic"
+  },
+  {
+   "id": "PLAN-20261202-windows",
+   "date": "2026-12-02",
+   "title": "Why are airplane windows rounded?",
+   "series": "How Does That Even Work?",
+   "premise": [
+    "aviation",
+    "windows",
+    "metal fatigue",
+    "stress concentration",
+    "comet"
+   ],
+   "narrative_structure": "mystery_resolved_through_evidence",
+   "animation_approach": "VISUAL_CASE_FILE",
+   "cover_composition": "document_still_life",
+   "opener_pattern": "case_opening",
+   "ending_pattern": "action_for_viewer",
+   "environment": "case_file",
+   "status": "v4 demo"
+  },
+  {
+   "id": "PLAN-20261203-leapsecond",
+   "date": "2026-12-03",
+   "title": "Why are clocks dropping the leap second?",
+   "series": "The Fine Print",
+   "premise": [
+    "time",
+    "leap second",
+    "earth rotation",
+    "atomic clocks",
+    "utc"
+   ],
+   "narrative_structure": "comparison_two_worlds",
+   "animation_approach": "TWO_WORLDS",
+   "cover_composition": "split_two_worlds",
+   "opener_pattern": "two_things_disagree",
+   "ending_pattern": "permission_reveal",
+   "environment": "two_skies",
+   "status": "v4 demo"
+  },
+  {
+   "id": "PLAN-20261204-nickel",
+   "date": "2026-12-04",
+   "title": "Why does a nickel cost 13 cents to make?",
+   "series": "Follow the Money",
+   "premise": [
+    "coins",
+    "nickel",
+    "mint",
+    "seigniorage",
+    "cost"
+   ],
+   "narrative_structure": "journey",
+   "animation_approach": "FOLLOW_THE_JOURNEY",
+   "cover_composition": "object_hero",
+   "opener_pattern": "object_with_price",
+   "ending_pattern": "image_to_remember",
+   "environment": "mint_floor",
+   "status": "v4 demo"
+  },
+  {
+   "id": "BB-20261127-013",
+   "date": "2026-11-27",
+   "title": "Why is it called Black Friday?",
+   "series": "Follow the Money",
+   "premise_keywords": [
+    "Black Friday",
+    "name origin",
+    "Philadelphia police",
+    "traffic",
+    "Big Friday",
+    "in the black myth",
+    "retail"
+   ],
+   "narrative_structure": "myth_then_mechanism",
+   "animation_approach": "MINIATURE_WORLD",
+   "cover_composition": "miniature_world",
+   "opener_pattern": "myth_you_have_heard",
+   "ending_pattern": "image_to_remember",
+   "environment": "daylight"
+  }
  ]
 }
