@@ -121,10 +121,104 @@ def make(out, spec, logo=None, preview=None):
         sheet.save(preview)
 
 
+def make_v4(out, spec, spec_path, logo=None, preview=None):
+    """Cover v4 (2026-11-26): the episode's own illustrated art fills the frame; a fixed brand layer sits on top.
+
+    Brand constants (identify the channel in a grid): Inter Black headline with exactly one *yellow* phrase,
+    the mark + BONUS BRAINCELL lockup bottom-left inside the 3:4 crop, the series name in small muted caps.
+    Variables (make each episode distinct): environment, art, composition ("layout"), amount of text.
+
+    cover.json (v4):
+      {"v4": true, "series": "Follow the Money", "environment": "mint_floor",
+       "art": {"fn": "cover_art", "t": 0, "params": {...}},   # function in the episode's scenes.py (same signature as scenes)
+       "layout": "top" | "bottom" | "middle",                   # where the headline block sits inside the 3:4 crop
+       "headline": "A 5¢ coin|that costs *13¢*",                 # "|" = line break; *...* = the one yellow phrase
+       "sub": "optional one short line", "scrim": true}
+    """
+    import importlib.util, world as WD
+    e = WD.env(spec.get("environment"))
+    img = WD.background(spec.get("environment"))
+    d = ImageDraw.Draw(img)
+    art = spec.get("art")
+    if art:
+        mp = os.path.join(os.path.dirname(os.path.abspath(spec_path)), art.get("module", "scenes.py"))
+        ms = importlib.util.spec_from_file_location("episode_scenes", mp)
+        mod = importlib.util.module_from_spec(ms); ms.loader.exec_module(mod)
+        ctx = dict(env=e, dur=10.0, gt=0.0, total=80.0, scene=0, fps=30, spec=spec, cover=True)
+        r = getattr(mod, art["fn"])(img, d, float(art.get("t", 0)), dict(art.get("params", {})), ctx)
+        if isinstance(r, Image.Image):
+            img = r
+        dy = int(spec.get("art_dy", 0))  # move the art up (negative) or down to make room for the headline
+        if dy:
+            base = WD.background(spec.get("environment"))
+            src = img.crop((0, max(0, -dy), W, H - max(0, dy)))
+            base.paste(src, (0, max(0, dy)))
+            img = base
+        d = ImageDraw.Draw(img)
+    layout = spec.get("layout", "top")
+    lines = spec["headline"].split("|")
+    ink = e["ink"]
+    # fit the headline: up to 128 px Inter Black, within x 70-1010
+    size = spec.get("size", 128)
+    def plain(x): return x.replace("*", "")
+    while size > 76 and any(d.textlength(plain(l), font=F(size, "Black")) > 940 for l in lines):
+        size -= 4
+    lh = size * 1.04
+    block = lh * len(lines) + (70 if spec.get("sub") else 0)
+    top = {"top": 300, "middle": 960 - block / 2, "bottom": 1495 - block}[layout]
+    if spec.get("scrim", True):
+        sc = Image.new("RGBA", (W, H), (0, 0, 0, 0)); sd = ImageDraw.Draw(sc)
+        y0, y1 = top - 120, top + block + 110
+        base = e["top"] if layout != "bottom" else e["bottom"]
+        for y in range(int(max(0, y0)), int(min(H, y1))):
+            k = min(1, (y - y0) / 110, (y1 - y) / 110)
+            sd.line([(0, y), (W, y)], fill=tuple(base) + (int(205 * max(0, k)),))
+        img.paste(sc, (0, 0), sc); d = ImageDraw.Draw(img)
+    y = top + lh / 2
+    for l in lines:  # draw with one yellow phrase
+        x = 540 - d.textlength(plain(l), font=F(size, "Black")) / 2
+        on = False
+        for part in l.replace("*", "\x00*\x00").split("\x00"):
+            if part == "*":
+                on = not on; continue
+            if not part:
+                continue
+            col = DZ.C["track"] if on else ink
+            if on and e["light"]:  # yellow on paper: draw a highlighter band, navy text
+                tw = d.textlength(part, font=F(size, "Black"))
+                d.rectangle([x - 6, y - size * 0.40, x + tw + 6, y + size * 0.42], fill=DZ.C["track"])
+                col = DZ.C["bg"]
+            d.text((x, y), part, font=F(size, "Black"), fill=col, anchor="lm")
+            x += d.textlength(part, font=F(size, "Black"))
+        y += lh
+    if spec.get("sub"):
+        d.text((540, y + 8), spec["sub"], font=F(46, "Bold"), fill=e["muted"], anchor="mm")
+    # brand lockup: always bottom-left inside the 3:4 crop
+    lg = logo_img(78, logo)
+    bx, by = 76, 1590
+    img.paste(lg, (bx, int(by - lg.height / 2)), lg)
+    f = F(36, "ExtraBold")
+    d.text((bx + lg.width + 16, by - 14), "BONUS BRAINCELL", font=f, fill=ink, anchor="lm")
+    d.text((bx + lg.width + 16, by + 24), spec["series"].upper(), font=F(26, "Bold"), fill=e["muted"], anchor="lm")
+    img.save(out)
+    if preview:
+        full = img.resize((270, 480))
+        g = img.crop((0, 240, 1080, 1680)).resize((360, 480))
+        s_ = img.crop((0, 420, 1080, 1500)).resize((480, 480))
+        sheet = Image.new("RGB", (1170, 520), (20, 20, 24))
+        sheet.paste(full, (20, 20)); sheet.paste(g, (310, 20)); sheet.paste(s_, (690, 20))
+        sheet.save(preview)
+
+
 if __name__ == "__main__":
     a = sys.argv
     logo = a[a.index("--logo") + 1] if "--logo" in a else None
     if "--spec" not in a:
         sys.exit(__doc__)
-    spec = json.load(open(a[a.index("--spec") + 1]))
-    make(a[1], spec, logo, a[1].replace(".png", "_crops.png") if "--preview" in a else None)
+    sp = a[a.index("--spec") + 1]
+    spec = json.load(open(sp))
+    prev = a[1].replace(".png", "_crops.png") if "--preview" in a else None
+    if spec.get("v4"):
+        make_v4(a[1], spec, sp, logo, prev)
+    else:
+        make(a[1], spec, logo, prev)

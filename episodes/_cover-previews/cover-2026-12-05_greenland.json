@@ -1,0 +1,14 @@
+{
+ "v4": true,
+ "series": "The Fine Print",
+ "environment": "daylight",
+ "art": {
+  "fn": "greenland",
+  "t": 0,
+  "params": {}
+ },
+ "layout": "top",
+ "headline": "Greenland isn't|*as big as Africa*",
+ "size": 112,
+ "scrim": true
+}

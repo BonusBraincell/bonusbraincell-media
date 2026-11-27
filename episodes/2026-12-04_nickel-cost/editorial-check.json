@@ -1,0 +1,10 @@
+{
+ "spec": "spec.json",
+ "title": "Why does a nickel cost 13 cents to make?",
+ "verdict": "PASS",
+ "fails": [],
+ "warnings": [],
+ "notes": [
+  "201 narrated words"
+ ]
+}

@@ -2,6 +2,8 @@
 
 # Production templates
 
+> **Workflow v4 is the default from the 2026-11-30 slot (Autopilot and Pick Mode).** Read `WORKFLOW-v4.md` first: episode record, narrative structures, the eight animation approaches, custom scenes (`world.py`, episode `scenes.py`), v4 covers, the editorial gate (`check_episode.py`) and platform guidance. Worked examples: `../episodes/`. v3 below still applies inside v4.
+
 > **Design system v3 is the default from 2026-11-21 (Autopilot and Pick Mode).** Read `DESIGN.md` first. It holds the rules, the v3 scene types (`hook_object`, `compare`, `whole`, `process`, `cross`, `diagram`, `answer`), the fallbacks and the final checks. All values live in `design-system.json`, the code in `design.py`, the logo in `brand/mark.png` (used automatically; `--logo` is optional) and the icons in `icons/` (Lucide, ISC). Working example: `episode-spec-EXAMPLE-v3-flags.json` + `cover-spec-EXAMPLE-v3-flags.json`. Every render also writes `scene-plan.md/.json`, `qa-report.json` and `qa-sheet.png`; a package is ready only when `qa-report.json` shows `"pass_": true`.
 
 | File | Use |
@@ -59,3 +61,12 @@ Goal: narration that sounds recorded, not pasted. All of it is subtle; the AI la
 - **Script punctuation is direction:** `...` = a held beat before a reveal, `?` = a real question pause, short sentences = punch. Use line-level variety, not uniform periods.
 - **Voice blend (available, off):** spec `"voice": {"af_heart": 0.8, "af_bella": 0.2}` blends Kokoro styles. Not used; the narrator rotates instead. No pitch or tempo shifting on top of the house speed.
 - **QA:** `qa-report.json` → `audio` block: `longest_digital_zero_s` (should be 0), `floor_dbfs_p5` (≈ −50), breaths, per-scene gaps and tails. A zero run over 0.05 s with room tone on is a warning.
+
+
+## Workflow v4 additions (2026-11-26)
+- `"workflow": "v4"` in a spec turns on: `"visual": "custom"` scenes from the episode's `scenes.py` (`params.fn`), per-scene `"environment"`, `"transition"` (cut, dissolve, push_left, push_up, zoom_through; scene 1 may dissolve from the cover), `"sfx"` cues (`sfx.py`), `"explain"` fields in scene-plan.md, and the `"record"` block in scene-plan.md / qa-report.json.
+- `"caption_style": "kinetic"`: burned-in captions as 1-3 word chunks (84 px Inter Black, numbers in yellow, 0.12 s pop-in); captions.srt keeps full phrases.
+- `"music": {"mood": "curious|tense|bright", "bpm": 96, "peak_db": -30}`: procedural music bed (no samples, no license) under narration.
+- Narration cache in `OUT/_work/tts_*.wav`: re-renders after visual fixes don't re-synthesize.
+- `make_cover.py` with `"v4": true`: episode art + fixed brand layer (see WORKFLOW-v4 §8).
+- `check_episode.py spec.json` before every render; `preview_scene.py spec.json /tmp/prev` while building scenes.

@@ -16,6 +16,9 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import design as DZ
+import world as WD   # v4 scene kit (environments, illustrated custom scenes, env-aware chrome)
+import sfx as SFX    # v4 procedural sound effects
+import importlib.util
 
 W, H, FPS = DZ.W, DZ.H, DZ.DS["canvas"]["fps"]
 NAVY = DZ.C["bg"]
@@ -849,6 +852,14 @@ def main():
     cover_path = sys.argv[sys.argv.index("--cover") + 1] if "--cover" in sys.argv else None
     cover_hold = DZ.M["cover_hold"] if cover_path else 0.0
     spec = json.load(open(spec_path))
+    # ---- v4 (2026-11-26): custom illustrated scenes, environments, transitions, sound effects ----
+    v4 = spec.get("workflow") == "v4"
+    scene_mod = None
+    if v4 or any(sc.get("visual") == "custom" for sc in spec["scenes"]):
+        mp = os.path.join(os.path.dirname(os.path.abspath(spec_path)), spec.get("scene_module", "scenes.py"))
+        if os.path.exists(mp):
+            ms = importlib.util.spec_from_file_location("episode_scenes", mp)
+            scene_mod = importlib.util.module_from_spec(ms); ms.loader.exec_module(scene_mod)
     # EXP-06: "opening": "motion" = after the 0.5 s cover, the first scene opens with a push-in and a moving visual.
     # "static" (default) = the current behaviour. The daily task alternates these by date (see Growth/experiment-log.md).
     opening = spec.get("opening", "static")
@@ -887,7 +898,15 @@ def main():
         ss = max(0.9, min(1.2, float(sc.get("speed", speed))))
         rng = np.random.default_rng([seed, i])
         info = {}
-        dur, sr = tts_scene(sc["_tts_raw"], sv, ss, wav, kokoro, rng, info)
+        # TTS cache (v4): identical text + voice + speed + seed reuses the previous take, so re-renders after
+        # visual fixes don't re-synthesize narration (and sound identical).
+        ck = zlib.crc32(json.dumps([sc["_tts_raw"], str(sv0), ss, int(seed), i]).encode())
+        cwav, cinfo = os.path.join(work, f"tts_{ck:08x}.wav"), os.path.join(work, f"tts_{ck:08x}.json")
+        if os.path.exists(cwav) and os.path.exists(cinfo):
+            shutil.copy(cwav, wav); c_ = json.load(open(cinfo)); dur, sr = c_["dur"], c_["sr"]; info.update(c_["info"])
+        else:
+            dur, sr = tts_scene(sc["_tts_raw"], sv, ss, wav, kokoro, rng, info)
+            shutil.copy(wav, cwav); json.dump(dict(dur=dur, sr=sr, info=info), open(cinfo, "w"))
         nxt_vis = spec["scenes"][i + 1]["visual"] if i + 1 < len(spec["scenes"]) else None
         if "pause_after" in sc:
             stail = float(sc["pause_after"])
@@ -909,6 +928,9 @@ def main():
     for sc, tl in zip(spec["scenes"], timeline):
         sc["_p"] = resolve_times(sc.get("params", {}), sc["tts"], lead, tl["speech"], warns)
         sc["_p"]["_dur"] = tl["dur"]
+        sc["_sfx"] = resolve_times(sc.get("sfx", []), sc["tts"], lead, tl["speech"], warns)
+        if sc["visual"] == "custom" and (scene_mod is None or not hasattr(scene_mod, sc.get("params", {}).get("fn", ""))):
+            sys.exit(f"scene {tl['i'] + 1}: custom visual needs params.fn defined in the episode's scenes.py")
         if sc["visual"] in LEGACY:
             warns.append(f"scene {tl['i'] + 1} uses legacy visual '{sc['visual']}' (allowed; v3 types preferred, see DESIGN.md)")
         for k in ("subject", "changes"):
@@ -929,6 +951,31 @@ def main():
     with open(os.path.join(out, "captions.srt"), "w") as f:
         for k, c in enumerate(cues, 1):
             f.write(f"{k}\n{srt_time(c['start'])} --> {srt_time(c['end'])}\n{c['text']}\n\n")
+    # v4.1 "kinetic" burned-in captions: 1-3 word chunks, big, centred (captions.srt keeps full phrases)
+    burn = cues
+    if spec.get("caption_style") == "kinetic":
+        burn = []
+        for c in cues:
+            ws = c["text"].split()
+            groups, cur = [], []
+            for w_ in ws:
+                cur.append(w_)
+                brk = len(cur) >= 3 or w_[-1:] in ",.:;?!" or (len(cur) >= 2 and len(" ".join(cur)) > 14)
+                if brk and w_.lower().strip(",.:;?!\"'") in STOP_END and len(cur) < 4 and w_[-1:] not in ",.:;?!":
+                    brk = False   # never end a chunk on a weak word ("in", "the", "of"...)
+                if brk:
+                    groups.append(cur); cur = []
+            if cur:
+                if groups and len(cur) == 1 and len(" ".join(groups[-1] + cur)) <= 18:
+                    groups[-1] += cur
+                else:
+                    groups.append(cur)
+            tot = sum(len(" ".join(g)) + 2 for g in groups)
+            st = c["start"]
+            for g in groups:
+                d_ = (c["end"] - c["start"]) * (len(" ".join(g)) + 2) / tot
+                burn.append(dict(start=st, end=st + d_, text=" ".join(g), scene=c["scene"]))
+                st += d_
 
     # 3) frames -> one encoded file per scene (cover first: frame 0 = thumbnail)
     seglist = []
@@ -942,6 +989,9 @@ def main():
             proc.stdin.write(cimg.tobytes())
         proc.stdin.close(); proc.wait()
         seglist.append(cseg)
+    prev_clean = None
+    if v4 and cover_path:
+        prev_clean = Image.open(cover_path).convert("RGB").resize((W, H))
     for sc, tl in zip(spec["scenes"], timeline):
         nfr = int(round(tl["dur"] * FPS))
         tmp = os.path.join(work, f"s{tl['i']:02}.tmp.mp4")
@@ -949,33 +999,71 @@ def main():
         proc = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}",
                                  "-r", str(FPS), "-i", "-", "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
                                  "-pix_fmt", "yuv420p", "-r", str(FPS), tmp], stdin=subprocess.PIPE)
-        fn = VISUALS[sc["visual"]]
+        fn = VISUALS.get(sc["visual"]) if sc["visual"] != "custom" else getattr(scene_mod, sc["_p"]["fn"])
+        envname = sc.get("environment", spec.get("environment"))
+        ENV = WD.env(envname) if (v4 or envname) else None
+        trans = sc.get("transition", "fade" if not v4 else "dissolve") if tl["i"] > 0 else sc.get("transition", "none")
+        tdur = float(sc.get("transition_dur", {"cut": 0, "none": 0, "fade": DZ.M["scene_fade"]}.get(trans, 0.4)))
         keyframe = None
         probe = {int(round(min(tl["dur"] - 0.1, 1.2) * FPS)), int(nfr * 0.85)}
         sc["_qa"] = set()
         for fr in range(nfr):
             t = fr / FPS
             gt = tl["start"] + t
-            img = background(); d = ImageDraw.Draw(img)
-            chrome(img, d, spec["series"], gt / total, logo_path)
-            DZ.reg_reset()
-            if sc["visual"] in ("cta", "answer"):
-                fn(img, d, t, sc["_p"], logo_path)
+            if v4:
+                DZ.reg_reset()
+                img = WD.background(envname); d = ImageDraw.Draw(img)
+                if sc["visual"] == "custom":
+                    ctx = dict(env=ENV, dur=tl["dur"], gt=gt, total=total, scene=tl["i"], fps=FPS, spec=spec)
+                    r_ = fn(img, d, t, sc["_p"], ctx)
+                    if isinstance(r_, Image.Image):
+                        img = r_; d = ImageDraw.Draw(img)
+                elif sc["visual"] in ("cta", "answer"):
+                    fn(img, d, t, sc["_p"], logo_path)
+                else:
+                    fn(img, d, t, sc["_p"])
+                clean = img
+                if t < tdur and prev_clean is not None:  # transition from the previous scene's last clean frame
+                    u = WD.ease_io(t / tdur)
+                    if trans in ("dissolve", "fade"):
+                        img = Image.blend(prev_clean, img, u)
+                    elif trans in ("push_left", "push_up"):
+                        fr_ = Image.new("RGB", (W, H))
+                        if trans == "push_left":
+                            off = int(W * u); fr_.paste(prev_clean, (-off, 0)); fr_.paste(img, (W - off, 0))
+                        else:
+                            off = int(H * u); fr_.paste(prev_clean, (0, -off)); fr_.paste(img, (0, H - off))
+                        img = fr_
+                    elif trans == "zoom_through":
+                        img = Image.blend(WD.zoom(prev_clean, 1 + 0.6 * u), img, u)
+                    d = ImageDraw.Draw(img)
+                WD.chrome(img, d, spec["series"], gt / total, ENV, logo_path)
             else:
-                fn(img, d, t, sc["_p"])
+                img = background(); d = ImageDraw.Draw(img)
+                chrome(img, d, spec["series"], gt / total, logo_path)
+                DZ.reg_reset()
+                if sc["visual"] in ("cta", "answer"):
+                    fn(img, d, t, sc["_p"], logo_path)
+                else:
+                    fn(img, d, t, sc["_p"])
             if opening == "motion" and tl["i"] == 0 and t < 0.9:
                 z = 1.10 - 0.10 * ease(t / 0.9)  # push-in: starts 10% zoomed, settles by 0.9 s
                 zw, zh = int(W / z), int(H / z)
                 l, tp = (W - zw) // 2, (H - zh) // 2
                 img = img.crop((l, tp, l + zw, tp + zh)).resize((W, H), Image.BICUBIC)
                 d = ImageDraw.Draw(img)
-            ctext = next((c["text"] for c in cues if c["start"] <= gt < c["end"]), None)
-            caption(img, ctext)
+            cc = next((c for c in burn if c["start"] <= gt < c["end"]), None)
+            if spec.get("caption_style") == "kinetic":
+                WD.kinetic_caption(img, cc["text"] if cc else None, gt - cc["start"] if cc else 0, ENV or WD.env())
+            else:
+                caption(img, cc["text"] if cc else None)
             if fr in probe:
                 sc["_qa"].update(DZ.layout_issues(DZ.REG["text"]))
                 sc["_qa"].update(f"text shrunk to minimum and cut: '{x[:50]}'" for x in DZ.REG["fit"])
+            if v4 and fr == nfr - 1:
+                prev_clean = clean
             # gentle fade at scene start
-            if t < 0.2 and tl["i"] > 0:
+            if not v4 and t < 0.2 and tl["i"] > 0:
                 img = Image.blend(Image.new("RGB", (W, H), NAVY), img, min(1.0, 0.4 + 0.6 * t / DZ.M["scene_fade"]))
             proc.stdin.write(img.tobytes())
             if fr == int(nfr * 0.85):
@@ -984,7 +1072,7 @@ def main():
         if proc.returncode != 0:
             sys.exit(f"scene {tl['i']} failed")
         os.replace(tmp, fin)
-        keyframe.save(os.path.join(out, "images", f"scene{tl['i'] + 1:02}_{sc['visual']}.png"))
+        keyframe.save(os.path.join(out, "images", f"scene{tl['i'] + 1:02}_{sc['_p'].get('fn', sc['visual']) if sc['visual'] == 'custom' else sc['visual']}.png"))
         seglist.append(fin)
 
     # 4) join, then audio
@@ -1008,7 +1096,30 @@ def main():
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
         w.writeframes((track[: int(total * sr)] * 32767).astype("int16").tobytes())
     tmpv = os.path.join(out, "video.tmp.mp4")
-    if room_db is None:
+    sfx_cues = []
+    for sc, tl in zip(spec["scenes"], timeline):
+        for c in sc.get("_sfx", []):
+            sfx_cues.append(dict(t=tl["start"] + float(c.get("at", 0)), sound=c["sound"], gain_db=c.get("gain_db", 0), scene=tl["i"] + 1))
+    audio_info["sfx"] = [dict(t=round(c["t"], 2), sound=c["sound"], scene=c["scene"]) for c in sfx_cues]
+    music = spec.get("music")
+    audio_info["music"] = music
+    if sfx_cues or music:
+        sfx_wav = os.path.join(work, "sfx.wav")
+        tr = SFX.build_track(sfx_cues, total, DZ.DS.get("sfx", {}).get("default_peak_db", -19))
+        if music:
+            mb = SFX.music_bed(total, seed, float(music.get("peak_db", -30)), int(music.get("bpm", 96)), music.get("mood", "curious"))
+            tr[: len(mb)] += mb[: len(tr)]
+        if room_db is not None:
+            tr = tr + room_tone(len(tr), 48000, float(room_db), seed)
+        with wave.open(sfx_wav, "wb") as w:
+            w.setnchannels(1); w.setsampwidth(2); w.setframerate(48000)
+            w.writeframes((np.clip(tr, -1, 1) * 32767).astype("int16").tobytes())
+        fc = ("[1:a]loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[n];[2:a]aresample=48000[b];"
+              "[n][b]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.89[a]")
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", silent, "-i", nar, "-i", sfx_wav, "-filter_complex", fc,
+                        "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+                        "-shortest", "-movflags", "+faststart", tmpv], check=True)
+    elif room_db is None:
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", silent, "-i", nar, "-map", "0:v", "-map", "1:a", "-c:v", "copy",
                         "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-shortest",
                         "-movflags", "+faststart", tmpv], check=True)
@@ -1034,6 +1145,12 @@ def main():
     qp = os.path.join(out, "qa-report.json")
     if os.path.exists(qp):
         q = json.load(open(qp)); q["audio"] = audio_info
+        if v4:
+            q["workflow"] = "v4"
+            q["editorial"] = {k: spec.get("record", {}).get(k) for k in
+                              ("editorial_contribution", "narrative_structure", "animation_approach", "cover_composition")}
+            q["transitions"] = [sc.get("transition", "dissolve") for sc in spec["scenes"][1:]]
+            q["environments"] = sorted({sc.get("environment", spec.get("environment")) or "navy_classic" for sc in spec["scenes"]})
         json.dump(q, open(qp, "w"), indent=1)
     print("audio:", {k: v for k, v in audio_info.items() if k != "scenes"})
     if total <= 61:
@@ -1098,11 +1215,21 @@ def write_plan_and_qa(spec, timeline, cues, out, total, warns, cover_path):
             labels_values_units_sources=_facts(p, []),
             changes=changes, changes_auto=sorted(set(auto), key=lambda x: float(x.split("s:")[0])),
             assets=sorted(_assets(p, set())) or ["drawn in renderer (no external asset)"],
+            explain=sc.get("explain"), environment=sc.get("environment", spec.get("environment")),
+            transition=sc.get("transition"), sfx=[c.get("sound") for c in sc.get("_sfx", [])],
             qa=sorted(sc.get("_qa", set()))))
     json.dump(dict(total=round(total, 2), cover=bool(cover_path), opening=spec.get("opening", "static"), beats=plan),
               open(os.path.join(out, "scene-plan.json"), "w"), indent=1)
     with open(os.path.join(out, "scene-plan.md"), "w") as f:
         f.write(f"# Scene plan · {spec.get('title', spec.get('series', ''))}\n\nTotal {total:.1f} s · opening {spec.get('opening', 'static')} · design system v{DZ.DS['version']}\n")
+        rec = spec.get("record")
+        if rec:
+            f.write("\n## Episode record (v4)\n")
+            for k in ("question", "editorial_contribution", "narrative_structure", "animation_approach", "custom_scene",
+                      "cover_composition", "similar_recent_episodes"):
+                v_ = rec.get(k)
+                if v_:
+                    f.write(f"- **{k.replace('_', ' ').capitalize()}:** {json.dumps(v_, ensure_ascii=False) if not isinstance(v_, str) else v_}\n")
         if cover_path:
             f.write(f"\n**0.00–{DZ.M['cover_hold']:.2f} s · cover** (frame 0 = thumbnail)\n")
         for b in plan:
@@ -1112,6 +1239,13 @@ def write_plan_and_qa(spec, timeline, cues, out, total, warns, cover_path):
             f.write("- **Labels, values, units, sources:** " + ("; ".join(b["labels_values_units_sources"]) or "none") + "\n")
             f.write("- **What changes and when:** " + ("; ".join(b["changes"] + b["changes_auto"]) or "static hold") + "\n")
             f.write("- **Assets:** " + "; ".join(b["assets"]) + "\n")
+            if b.get("explain"):
+                ex = b["explain"]
+                for k in ("understand", "objects", "change", "cause", "text"):
+                    if ex.get(k):
+                        f.write(f"- **{ {'understand': 'Viewer must understand', 'objects': 'Visible objects', 'change': 'What changes over time', 'cause': 'What causes the change', 'text': 'Necessary on-screen text'}[k] }:** {ex[k] if isinstance(ex[k], str) else '; '.join(ex[k])}\n")
+            if b.get("environment") or b.get("transition") or b.get("sfx"):
+                f.write(f"- **Environment / transition in / sound:** {b.get('environment') or 'navy_classic'} / {b.get('transition') or 'default'} / {', '.join(b['sfx']) or 'none'}\n")
             if b["qa"]:
                 f.write("- **Layout check:** " + "; ".join(b["qa"]) + "\n")
     issues = sorted({q for b in plan for q in b["qa"]})

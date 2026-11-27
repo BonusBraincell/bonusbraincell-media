@@ -1,0 +1,14 @@
+{
+ "v4": true,
+ "series": "Follow the Money",
+ "environment": "dusk_map",
+ "art": {
+  "fn": "hormuz",
+  "t": 0,
+  "params": {}
+ },
+ "layout": "top",
+ "headline": "One narrow strait.|*Your gas price.*",
+ "size": 112,
+ "scrim": true
+}

@@ -1,0 +1,11 @@
+{
+ "spec": "spec.json",
+ "title": "Why are clocks dropping the leap second?",
+ "verdict": "PASS",
+ "fails": [],
+ "warnings": [],
+ "notes": [
+  "210 narrated words",
+  "possible similar episodes: BB-20261118-004 Why does the U.S. have time zones? (shared: clocks)"
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "v4": true,
+ "series": "Follow the Money",
+ "environment": "dusk_map",
+ "art": {
+  "fn": "cybermonday",
+  "t": 0,
+  "params": {}
+ },
+ "layout": "bottom",
+ "headline": "Who made up|*Cyber Monday*?",
+ "size": 112,
+ "scrim": true,
+ "art_dy": -300
+}

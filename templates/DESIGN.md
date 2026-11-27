@@ -1,6 +1,6 @@
 # Bonus Braincell · Design system v3 (default from 2026-11-21)
 
-**This is the one shared design source for Autopilot and Pick Mode.** Values live in `design-system.json`; code in `design.py`; `render_episode.py` and `make_cover.py` read both. Change a value in the JSON, never in a visual. Repo `templates/` is the master; the OneDrive `Production/templates/` folder is a mirror.
+**This is the one shared design source for Autopilot and Pick Mode.** From the 2026-11-30 slot, episodes are built with workflow v4 (`WORKFLOW-v4.md`): these rules still apply, plus environments, custom scenes and v4 covers. Values live in `design-system.json`; code in `design.py`; `render_episode.py` and `make_cover.py` read both. Change a value in the JSON, never in a visual. Repo `templates/` is the master; the OneDrive `Production/templates/` folder is a mirror.
 
 Tagline: "Learning Beyond Your Day Job." Look: clean editorial, deep navy, electric yellow, bold Inter, the butterfly/brain/lightning mark.
 

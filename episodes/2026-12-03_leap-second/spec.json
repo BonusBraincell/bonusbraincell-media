@@ -1,0 +1,332 @@
+{
+ "workflow": "v4",
+ "title": "Why are clocks dropping the leap second?",
+ "series": "The Fine Print",
+ "post_id": "DEMO-20261203-leapsecond",
+ "slot_date": "2026-12-03",
+ "environment": "two_skies",
+ "scene_module": "scenes.py",
+ "opening": "motion",
+ "speed": 1.06,
+ "record": {
+  "question": "Why did the world's timekeepers vote to stop adding leap seconds, and what happens instead?",
+  "audience_reason": "Every phone, bank and GPS receiver depends on UTC; the October 2026 vote is a once-in-50-years change to how the world tells time, and it's a follow-up to our time-zones episode.",
+  "editorial_contribution": {
+   "type": "two-worlds comparison + calculation + real dataset",
+   "statement": "We run atom time and Earth time side by side for the whole episode, show with a labeled calculation how milliseconds per day become a second in about a year, animate the real 27-step IERS leap-second record (9 in the 1970s, none since 2016), explain why a speeding-up Earth made a first-ever negative leap second a risk, and reveal the new limit (0.9 s to 1 hour) on a labeled log scale."
+  },
+  "narrative_structure": "comparison_two_worlds",
+  "animation_approach": "TWO_WORLDS",
+  "secondary_approach": "DATA_STORY + SCALE_REVEAL",
+  "custom_scene": "Split panels for the whole episode: a cesium atom and digital clock (left), Earth from above the pole turning under the sun (right), with a yellow gap bar as the through-line; a 2.7 ms/day calendar fill; a clock ticking into 23:59:60 while the gap gauge snaps back; the real TAI-UTC staircase 1972-2017; a negative leap second skipping :59; the allowed gap zooming from 0.9 s to one hour on a log axis.",
+  "cover_composition": {
+   "type": "split_two_worlds",
+   "layout": "middle",
+   "environment": "two_skies",
+   "text_amount": "one line + the yellow 23:59:60",
+   "main_object": "atom panel and Earth panel with a gap between them"
+  },
+  "sources_and_assumptions": "See sources-and-rights.md. The 2.7 ms/day figure is a labeled illustration, not a measured average. The decade count and dates come from the IERS table. The 30% figure is the CCTF/IERS workshop estimate quoted in Resolution 5.",
+  "asset_provenance": "All visuals drawn in code; IERS leap-second dates from IANA tzdata leap-seconds.list (public domain data); Inter (OFL); DejaVu Sans Mono; narration Kokoro (Apache-2.0); sound effects synthesized.",
+  "similar_recent_episodes": [
+   "BB-20261118-004 Why does the U.S. have time zones? (timekeeping; this is its planned Part 2)",
+   "BB-20261126-012 Why is Thanksgiving on the fourth Thursday? (calendar rule; different mechanism)"
+  ],
+  "render_review_status": "draft"
+ },
+ "scenes": [
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "transition_dur": 0.35,
+   "speed": 1.08,
+   "subject": "two panels: atom clock ticking; Earth turning under the sun; a yellow gap opens between them",
+   "changes": [
+    "atom electrons orbit, seconds tick",
+    "Earth turns",
+    "gap bar grows on 'don't agree'"
+   ],
+   "explain": {
+    "understand": "there are two kinds of time and they differ",
+    "objects": [
+     "atom",
+     "digital clock",
+     "Earth",
+     "sun",
+     "gap bar"
+    ],
+    "change": "gap opens",
+    "cause": "the two clocks run at different rates",
+    "text": [
+     "ATOM CLOCK",
+     "EARTH CLOCK",
+     "GAP BETWEEN THE CLOCKS"
+    ]
+   },
+   "sfx": [
+    {
+     "at": 0.3,
+     "sound": "tick"
+    },
+    {
+     "at": "don't agree",
+     "sound": "tock"
+    }
+   ],
+   "tts": "Your phone keeps time with atoms. The sun keeps time with a spinning planet. And the two don't agree.",
+   "caption": "Your phone keeps time with atoms.|The sun keeps time with a spinning planet.|And the two don't agree.",
+   "params": {
+    "fn": "l_hook",
+    "gap_at": "don't agree"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "cut",
+   "speed": 1.05,
+   "subject": "even atom ticks (left) vs uneven Earth-day ticks (right); tides and interior labels",
+   "changes": [
+    "left ticks light in order",
+    "'tides: slower' on 'Tides'",
+    "'inside Earth' on 'deep inside'"
+   ],
+   "explain": {
+    "understand": "atomic seconds are constant; Earth's day length varies",
+    "objects": [
+     "two tick rows",
+     "labels"
+    ],
+    "change": "labels appear with the causes",
+    "cause": "tidal drag and shifts inside Earth",
+    "text": [
+     "EVERY SECOND EQUAL",
+     "EVERY DAY A LITTLE DIFFERENT",
+     "tides: slower",
+     "inside Earth: ±"
+    ]
+   },
+   "tts": "An atomic second never changes. Earth's spin does. Tides from the Moon drag on it, and shifts deep inside the planet nudge it faster or slower.",
+   "caption": "An atomic second never changes.|Earth's spin does.|Tides from the Moon drag on it,|and shifts deep inside the planet|nudge it faster or slower.",
+   "params": {
+    "fn": "l_wobble",
+    "tides_at": "Tides",
+    "inside_at": "deep inside"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.05,
+   "subject": "illustrative calculation: calendar squares fill for 370 days; gap bar reaches one second",
+   "changes": [
+    "ILLUSTRATIVE chip",
+    "days count to 370 while the gap bar fills to 1.00 s"
+   ],
+   "explain": {
+    "understand": "milliseconds per day accumulate to a second in about a year",
+    "objects": [
+     "calendar grid",
+     "day counter",
+     "gap bar"
+    ],
+    "change": "days accumulate",
+    "cause": "2.7 ms × 370 days ≈ 1 s",
+    "text": [
+     "ILLUSTRATIVE NUMBERS",
+     "each day: 86,400.0027 s",
+     "atom day: 86,400 s",
+     "EARTH BEHIND THE ATOMS"
+    ]
+   },
+   "tts": "Tiny gaps pile up. Say every day ran 2.7 thousandths of a second long. After about a year, Earth would be a full second behind the atoms.",
+   "caption": "Tiny gaps pile up.|Say every day ran 2.7 thousandths of a second long.|After about a year,|Earth would be a full second behind the atoms.",
+   "params": {
+    "fn": "l_calc",
+    "pile_at": "Say every day"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_left",
+   "speed": 1.04,
+   "subject": "UTC clock counts 23:59:58 → 23:59:60 → 00:00:00; gap gauge climbs to 0.9 s and snaps back",
+   "changes": [
+    "gauge climbs toward the 0.9 s line",
+    "clock shows a yellow :60 on '23:59:60'",
+    "gauge drops by one second"
+   ],
+   "explain": {
+    "understand": "a leap second resets the gap",
+    "objects": [
+     "digital clock",
+     "gap gauge with 0 and 0.9 s lines"
+    ],
+    "change": "an extra second is shown and the gap falls",
+    "cause": "the inserted second lets Earth catch up",
+    "text": [
+     "UTC CLOCK",
+     "THE GAP",
+     "0.9 s",
+     "one extra second"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "added one",
+     "sound": "beep"
+    }
+   ],
+   "tts": "So timekeepers built a patch. Whenever the gap neared nine-tenths of a second, they added one. The clock read 23:59:60.",
+   "caption": "So timekeepers built a patch.|Whenever the gap neared nine-tenths of a second,|they added one.|The clock read 23:59:60.",
+   "params": {
+    "fn": "l_patch",
+    "insert_at": "The clock read"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.05,
+   "subject": "real IERS data: TAI-UTC staircase from 10 s to 37 s, 1972-2017; 1970s highlighted",
+   "changes": [
+    "staircase draws step by step",
+    "1970s band on 'Nine'",
+    "last step marked on 'New Year's Eve'"
+   ],
+   "explain": {
+    "understand": "27 leap seconds, front-loaded, none since 2016",
+    "objects": [
+     "time axis",
+     "staircase line",
+     "1970s band",
+     "last-step marker"
+    ],
+    "change": "steps accumulate",
+    "cause": "each insertion adds one second",
+    "text": [
+     "leap seconds added: N",
+     "9 in the 1970s",
+     "last one: Dec 31, 2016",
+     "source line"
+    ]
+   },
+   "tts": "Since 1972, they've done it 27 times. Nine in the 1970s alone. The last one landed on New Year's Eve, 2016.",
+   "caption": "Since 1972, they've done it 27 times.|Nine in the 1970s alone.|The last one landed on New Year's Eve, 2016.",
+   "params": {
+    "fn": "l_data",
+    "seventies_at": "Nine",
+    "last_at": "New Year"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "zoom_through",
+   "speed": 1.05,
+   "subject": "Earth spinning faster with yellow speed arcs; a negative leap second deleting :59; 30% odds chip",
+   "changes": [
+    "Earth spins faster",
+    "23:59:58 → 00:00:00 with :59 struck out on 'deleting'",
+    "odds chip on 'thirty percent'"
+   ],
+   "explain": {
+    "understand": "a faster Earth raised the odds of the first negative leap second",
+    "objects": [
+     "Earth",
+     "speed arcs",
+     "clock digits",
+     "odds chip"
+    ],
+    "change": "a second is removed",
+    "cause": "shorter days reverse the gap",
+    "text": [
+     "23:59:58 59 00:00:00",
+     "never done before",
+     "30% CHANCE BY 2035 (CCTF/IERS)"
+    ]
+   },
+   "tts": "Then Earth sped up. Recent years brought the shortest days atomic clocks have ever measured. That raised a scary first: deleting a second. Timekeepers put the odds at thirty percent by 2035.",
+   "caption": "Then Earth sped up.|Recent years brought the shortest days|atomic clocks have ever measured.|That raised a scary first: deleting a second.|Timekeepers put the odds at thirty percent by 2035.",
+   "params": {
+    "fn": "l_faster",
+    "neg_at": "deleting",
+    "odds_at": "thirty percent"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_up",
+   "speed": 1.04,
+   "subject": "scale reveal: the allowed gap zooms out from 0.9 s to one hour on a log axis",
+   "changes": [
+    "old 0.9 s bar",
+    "axis zooms out and the yellow bar runs to 1 hour on 'an hour'"
+   ],
+   "explain": {
+    "understand": "the new rule allows a gap 4,000 times larger, so no patch for centuries",
+    "objects": [
+     "log axis",
+     "old limit bar",
+     "new limit bar"
+    ],
+    "change": "limit extends",
+    "cause": "CGPM Resolution 5",
+    "text": [
+     "from 20 May 2027",
+     "no more leap seconds",
+     "old limit",
+     "new limit: 1 hour",
+     "log scale"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "an hour",
+     "sound": "swoosh_up"
+    }
+   ],
+   "tts": "So in October, the world's timekeepers voted to stop patching. From May 20th, 2027, the clocks just keep counting. The gap with Earth can grow to as much as an hour.",
+   "caption": "So in October, the world's timekeepers|voted to stop patching.|From May 20th, 2027, the clocks just keep counting.|The gap with Earth can grow|to as much as an hour.",
+   "params": {
+    "fn": "l_reveal",
+    "hour_at": "an hour"
+   },
+   "pause_after": 1.0
+  },
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.0,
+   "pause_after": 0.5,
+   "subject": "phone and sun panels side by side, a thin gap allowed to drift",
+   "changes": [
+    "gap bar breathes slowly"
+   ],
+   "explain": {
+    "understand": "the repeatable takeaway",
+    "objects": [
+     "phone",
+     "Earth and sun",
+     "gap bar"
+    ],
+    "change": "gap drifts",
+    "cause": "payoff",
+    "text": [
+     "YOUR PHONE",
+     "THE SUN",
+     "ALLOWED TO DRIFT APART"
+    ]
+   },
+   "tts": "So here's the new deal. Your phone counts atoms. The sun follows the spin. From 2027, they're allowed to disagree... by up to an hour. Follow for one bonus braincell per scroll.",
+   "caption": "So here's the new deal.|Your phone counts atoms.|The sun follows the spin.|From 2027, they're allowed to disagree...|by up to an hour.|Follow for one bonus braincell per scroll.",
+   "params": {
+    "fn": "l_payoff"
+   }
+  }
+ ],
+ "caption_style": "kinetic",
+ "music": {
+  "mood": "curious",
+  "bpm": 90,
+  "peak_db": -30
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "spec": "spec.json",
+ "title": "Why are airplane windows rounded?",
+ "verdict": "PASS",
+ "fails": [],
+ "warnings": [],
+ "notes": [
+  "199 narrated words"
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "v4": true,
+ "series": "Follow the Money",
+ "environment": "blueprint",
+ "art": {
+  "fn": "cardnumber",
+  "t": 0,
+  "params": {}
+ },
+ "layout": "bottom",
+ "headline": "Your card's last digit|*checks the rest*",
+ "size": 112,
+ "scrim": true,
+ "art_dy": -360
+}

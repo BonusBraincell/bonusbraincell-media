@@ -1,0 +1,14 @@
+{
+ "v4": true,
+ "series": "Follow the Money",
+ "environment": "daylight",
+ "art": {
+  "fn": "blackfriday",
+  "t": 0,
+  "params": {}
+ },
+ "layout": "top",
+ "headline": "Who named|*Black Friday*?",
+ "size": 112,
+ "scrim": true
+}

@@ -1,0 +1,14 @@
+{
+ "v4": true,
+ "series": "Follow the Money",
+ "environment": "navy_classic",
+ "art": {
+  "fn": "miles",
+  "t": 0,
+  "params": {}
+ },
+ "layout": "top",
+ "headline": "Airlines' quiet|*money machine*",
+ "size": 112,
+ "scrim": true
+}
