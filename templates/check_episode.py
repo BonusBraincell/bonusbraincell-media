@@ -63,8 +63,10 @@ def main():
     full = " ".join(tts)
     n = words(full)
     notes.append(f"{n} narrated words")
-    if n < 175 or n > 240:
-        warns.append(f"{n} words: target 175-230 (65-90 s)")
+    lo_, hi_ = spec.get("duration_range", [61, 90])
+    wlo, whi = (95, 150) if hi_ <= 60 else (175, 240)
+    if n < wlo or n > whi:
+        warns.append(f"{n} words: target {wlo}-{whi} for a {lo_}-{hi_} s cut")
     low = full.lower()
     for b in BANNED:
         if b in low:

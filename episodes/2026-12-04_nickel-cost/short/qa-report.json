@@ -1,0 +1,140 @@
+{
+ "design_version": "4.0",
+ "duration": 53.93,
+ "duration_range": [
+  30,
+  55
+ ],
+ "duration_ok": true,
+ "cover_first_frame": true,
+ "layout_issues": [],
+ "missing_icons": [],
+ "warnings": [],
+ "guides_status": "ESTIMATED from public UI layouts on 2026-11-20; not verified against live previews. Re-check when a live preview is available and update here.",
+ "pass_": true,
+ "audio": {
+  "room_tone_db": -50,
+  "narrator": "am_onyx",
+  "quote_voice": "af_sarah",
+  "scenes": [
+   {
+    "gaps": [
+     0.433
+    ],
+    "breaths": 0,
+    "tail": 0.353
+   },
+   {
+    "gaps": [
+     0.287,
+     0.368
+    ],
+    "breaths": 0,
+    "tail": 0.4
+   },
+   {
+    "gaps": [],
+    "breaths": 0,
+    "tail": 0.385
+   },
+   {
+    "gaps": [
+     0.282
+    ],
+    "breaths": 0,
+    "tail": 0.373
+   },
+   {
+    "gaps": [
+     0.572
+    ],
+    "breaths": 0,
+    "tail": 0.391
+   },
+   {
+    "gaps": [],
+    "breaths": 0,
+    "tail": 0.449
+   },
+   {
+    "gaps": [
+     0.467,
+     0.4
+    ],
+    "breaths": 0,
+    "tail": 0.377
+   },
+   {
+    "gaps": [
+     0.284,
+     0.43
+    ],
+    "breaths": 0,
+    "tail": 0.4
+   }
+  ],
+  "sfx": [
+   {
+    "t": 5.06,
+    "sound": "clink",
+    "scene": 1
+   },
+   {
+    "t": 11.42,
+    "sound": "stamp",
+    "scene": 2
+   },
+   {
+    "t": 20.22,
+    "sound": "register",
+    "scene": 4
+   },
+   {
+    "t": 31.71,
+    "sound": "coins",
+    "scene": 6
+   },
+   {
+    "t": 45.5,
+    "sound": "paper",
+    "scene": 8
+   }
+  ],
+  "music": {
+   "mood": "curious",
+   "bpm": 96,
+   "peak_db": -30
+  },
+  "longest_digital_zero_s": 0.0,
+  "floor_dbfs_p5": -42.5,
+  "breaths": 0
+ },
+ "workflow": "v4",
+ "editorial": {
+  "editorial_contribution": {
+   "type": "calculation + resolved contradiction",
+   "statement": "We follow one coin through the Mint's own FY2025 cost lines (10.97 + 2.24 + 0.10 = 13.31 cents), show it sold to the Fed at face value, scale the gap to the year's 615 million coins, and resolve why the Mint can't simply switch metals (the alloy is in the statute)."
+  },
+  "narrative_structure": "journey",
+  "animation_approach": "FOLLOW_THE_JOURNEY",
+  "cover_composition": {
+   "type": "object_hero",
+   "layout": "top",
+   "environment": "mint_floor",
+   "text_amount": "two short lines",
+   "main_object": "a single nickel, huge, with a 13.31\u00a2 tag"
+  }
+ },
+ "transitions": [
+  "push_left",
+  "cut",
+  "cut",
+  "dissolve",
+  "zoom_through",
+  "push_up",
+  "dissolve"
+ ],
+ "environments": [
+  "mint_floor"
+ ]
+}

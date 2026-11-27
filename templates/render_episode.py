@@ -1153,10 +1153,11 @@ def main():
             q["environments"] = sorted({sc.get("environment", spec.get("environment")) or "navy_classic" for sc in spec["scenes"]})
         json.dump(q, open(qp, "w"), indent=1)
     print("audio:", {k: v for k, v in audio_info.items() if k != "scenes"})
-    if total <= 61:
-        print(f"WARNING: video is {total:.2f}s; it must be longer than 61 s (target 65-90). Lengthen the script and re-render.")
-    if total > 90:
-        print(f"WARNING: video is {total:.2f}s; keep it at or under 90 s.")
+    lo_, hi_ = spec.get("duration_range", [61, 90])
+    if total <= lo_:
+        print(f"WARNING: video is {total:.2f}s; it must be longer than {lo_} s. Lengthen the script and re-render.")
+    if total > hi_:
+        print(f"WARNING: video is {total:.2f}s; keep it at or under {hi_} s.")
 
 def _facts(p, acc):
     if isinstance(p, dict):
@@ -1250,11 +1251,12 @@ def write_plan_and_qa(spec, timeline, cues, out, total, warns, cover_path):
                 f.write("- **Layout check:** " + "; ".join(b["qa"]) + "\n")
     issues = sorted({q for b in plan for q in b["qa"]})
     missing = sorted(DZ.REG["missing_icons"])
-    rep_ = dict(design_version=DZ.DS["version"], duration=round(total, 2),
-                duration_ok=61 < total <= 90, cover_first_frame=bool(cover_path),
+    lo_, hi_ = spec.get("duration_range", [61, 90])  # v4.2 (Rob, 2026-11-26): short cuts use [30, 55]
+    rep_ = dict(design_version=DZ.DS["version"], duration=round(total, 2), duration_range=[lo_, hi_],
+                duration_ok=lo_ < total <= hi_, cover_first_frame=bool(cover_path),
                 layout_issues=issues, missing_icons=missing, warnings=warns,
                 guides_status=DZ.DS["platform_guides"]["_status"],
-                pass_=bool(61 < total <= 90 and cover_path and not issues and not missing))
+                pass_=bool(lo_ < total <= hi_ and cover_path and not issues and not missing))
     json.dump(rep_, open(os.path.join(out, "qa-report.json"), "w"), indent=1)
     # phone-size contact sheet with guides: cover, 0.6 s, each scene keyframe
     try:

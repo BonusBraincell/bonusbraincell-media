@@ -1,0 +1,120 @@
+{
+ "design_version": "4.0",
+ "duration": 44.73,
+ "duration_range": [
+  30,
+  55
+ ],
+ "duration_ok": true,
+ "cover_first_frame": true,
+ "layout_issues": [],
+ "missing_icons": [],
+ "warnings": [],
+ "guides_status": "ESTIMATED from public UI layouts on 2026-11-20; not verified against live previews. Re-check when a live preview is available and update here.",
+ "pass_": true,
+ "audio": {
+  "room_tone_db": -50,
+  "narrator": "af_kore",
+  "quote_voice": "am_onyx",
+  "scenes": [
+   {
+    "gaps": [
+     0.271,
+     0.355
+    ],
+    "breaths": 0,
+    "tail": 0.372
+   },
+   {
+    "gaps": [
+     0.209,
+     0.335
+    ],
+    "breaths": 0,
+    "tail": 0.317
+   },
+   {
+    "gaps": [
+     0.282
+    ],
+    "breaths": 0,
+    "tail": 0.297
+   },
+   {
+    "gaps": [],
+    "breaths": 0,
+    "tail": 0.387
+   },
+   {
+    "gaps": [
+     0.22
+    ],
+    "breaths": 0,
+    "tail": 0.415
+   },
+   {
+    "gaps": [
+     0.214
+    ],
+    "breaths": 0,
+    "tail": 0.4
+   }
+  ],
+  "sfx": [
+   {
+    "t": 0.8,
+    "sound": "tick",
+    "scene": 1
+   },
+   {
+    "t": 5.38,
+    "sound": "tock",
+    "scene": 1
+   },
+   {
+    "t": 15.04,
+    "sound": "beep",
+    "scene": 2
+   },
+   {
+    "t": 37.35,
+    "sound": "swoosh_up",
+    "scene": 5
+   }
+  ],
+  "music": {
+   "mood": "curious",
+   "bpm": 90,
+   "peak_db": -30
+  },
+  "longest_digital_zero_s": 0.0,
+  "floor_dbfs_p5": -42.0,
+  "breaths": 0
+ },
+ "workflow": "v4",
+ "editorial": {
+  "editorial_contribution": {
+   "type": "two-worlds comparison + calculation + real dataset",
+   "statement": "We run atom time and Earth time side by side for the whole episode, show with a labeled calculation how milliseconds per day become a second in about a year, animate the real 27-step IERS leap-second record (9 in the 1970s, none since 2016), explain why a speeding-up Earth made a first-ever negative leap second a risk, and reveal the new limit (0.9 s to 1 hour) on a labeled log scale."
+  },
+  "narrative_structure": "comparison_two_worlds",
+  "animation_approach": "TWO_WORLDS",
+  "cover_composition": {
+   "type": "split_two_worlds",
+   "layout": "middle",
+   "environment": "two_skies",
+   "text_amount": "one line + the yellow 23:59:60",
+   "main_object": "atom panel and Earth panel with a gap between them"
+  }
+ },
+ "transitions": [
+  "push_left",
+  "dissolve",
+  "zoom_through",
+  "push_up",
+  "dissolve"
+ ],
+ "environments": [
+  "two_skies"
+ ]
+}

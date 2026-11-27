@@ -1,0 +1,113 @@
+{
+ "design_version": "4.0",
+ "duration": 54.53,
+ "duration_range": [
+  30,
+  55
+ ],
+ "duration_ok": true,
+ "cover_first_frame": true,
+ "layout_issues": [],
+ "missing_icons": [],
+ "warnings": [],
+ "guides_status": "ESTIMATED from public UI layouts on 2026-11-20; not verified against live previews. Re-check when a live preview is available and update here.",
+ "pass_": true,
+ "audio": {
+  "room_tone_db": -50,
+  "narrator": "bm_fable",
+  "quote_voice": "af_kore",
+  "scenes": [
+   {
+    "gaps": [
+     0.22
+    ],
+    "breaths": 0,
+    "tail": 0.398
+   },
+   {
+    "gaps": [
+     0.313,
+     0.482
+    ],
+    "breaths": 0,
+    "tail": 0.311
+   },
+   {
+    "gaps": [
+     0.465,
+     0.373
+    ],
+    "breaths": 0,
+    "tail": 0.447
+   },
+   {
+    "gaps": [
+     0.31
+    ],
+    "breaths": 0,
+    "tail": 0.372
+   },
+   {
+    "gaps": [
+     0.269
+    ],
+    "breaths": 0,
+    "tail": 0.357
+   },
+   {
+    "gaps": [
+     0.355,
+     0.247
+    ],
+    "breaths": 0,
+    "tail": 0.4
+   }
+  ],
+  "sfx": [
+   {
+    "t": 0.75,
+    "sound": "stamp",
+    "scene": 1
+   },
+   {
+    "t": 16.47,
+    "sound": "crack",
+    "scene": 2
+   }
+  ],
+  "music": {
+   "mood": "tense",
+   "bpm": 84,
+   "peak_db": -30
+  },
+  "longest_digital_zero_s": 0.0,
+  "floor_dbfs_p5": -41.3,
+  "breaths": 0
+ },
+ "workflow": "v4",
+ "editorial": {
+  "editorial_contribution": {
+   "type": "resolved misconception + visual model",
+   "statement": "We walk the 1954 evidence in order (pressurized cabin, the Farnborough tank test at ~3,060 cycles, the Elba roof-window wreckage), show force in the skin detouring and piling up at a cut-out's tightest turn, put a number on it with a labeled Inglis model (round hole = 3x; tighter tip = higher), and correct the myth: the Comet's windows had 3-inch corner radii, but the stress there ran far higher than calculated."
+  },
+  "narrative_structure": "mystery_resolved_through_evidence",
+  "animation_approach": "VISUAL_CASE_FILE",
+  "cover_composition": {
+   "type": "document_still_life",
+   "layout": "bottom",
+   "environment": "case_file",
+   "text_amount": "two short lines",
+   "main_object": "case folder with a jet silhouette and a red-ringed window corner"
+  }
+ },
+ "transitions": [
+  "push_left",
+  "dissolve",
+  "cut",
+  "push_up",
+  "dissolve"
+ ],
+ "environments": [
+  "case_file"
+ ]
+}

@@ -239,7 +239,8 @@ def kinetic_caption(img, text, age, e):
     d = ImageDraw.Draw(img)
     size = 84
     f = DZ.F(size, "Black")
-    while d.textlength(text, font=f) > 680 and size > 56:
+    nw = len(text.split())
+    while d.textlength(text, font=f) + (nw - 1) * 16 > 660 and size > 52:
         size -= 4; f = DZ.F(size, "Black")
     s = 1.0 + 0.10 * (1 - ease_out(age / 0.12))
     words = text.split()

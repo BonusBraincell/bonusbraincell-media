@@ -1,0 +1,265 @@
+{
+ "workflow": "v4",
+ "title": "Why are airplane windows rounded?",
+ "series": "How Does That Even Work?",
+ "post_id": "DEMO-20261202-windows-short",
+ "slot_date": "2026-12-02",
+ "environment": "case_file",
+ "scene_module": "scenes.py",
+ "opening": "motion",
+ "speed": 1.06,
+ "record": {
+  "question": "Why are airplane windows rounded, and what did the Comet investigation actually find?",
+  "audience_reason": "Everyone has sat next to an airplane window; the popular 'square windows' story is half right, and the full version teaches a general engineering idea (stress concentration and fatigue).",
+  "editorial_contribution": {
+   "type": "resolved misconception + visual model",
+   "statement": "We walk the 1954 evidence in order (pressurized cabin, the Farnborough tank test at ~3,060 cycles, the Elba roof-window wreckage), show force in the skin detouring and piling up at a cut-out's tightest turn, put a number on it with a labeled Inglis model (round hole = 3x; tighter tip = higher), and correct the myth: the Comet's windows had 3-inch corner radii, but the stress there ran far higher than calculated."
+  },
+  "narrative_structure": "mystery_resolved_through_evidence",
+  "animation_approach": "VISUAL_CASE_FILE",
+  "secondary_approach": "SYSTEM_CUTAWAY",
+  "custom_scene": "A manila case file with two flights and a red-ringed window corner; a breathing cabin cross-section; a fuselage in a water tank with a cycle counter and a crack growing from a hatch corner; a torn roof panel with fatigue beach marks; force-flow lines bunching at a cut-out's corners; a live Inglis curve with a morphing hole; the real window drawn to scale with its 3-inch radius; a squarish window morphing into an oval traced by a highlighter.",
+  "cover_composition": {
+   "type": "document_still_life",
+   "layout": "bottom",
+   "environment": "case_file",
+   "text_amount": "two short lines",
+   "main_object": "case folder with a jet silhouette and a red-ringed window corner"
+  },
+  "sources_and_assumptions": "See sources-and-rights.md. The stress model is labeled on screen as a simplified elliptical-hole model, shape only, not the Comet's numbers; the force-flow lines are an illustration.",
+  "asset_provenance": "All visuals drawn in code for this episode; no archive photos; Inter (OFL); DejaVu Sans Mono (Bitstream Vera license); narration Kokoro (Apache-2.0); sound effects synthesized.",
+  "similar_recent_episodes": [
+   "BB-20261122-008 How does a plane fly upside down? (aviation; different subject: aerodynamics)",
+   "BB-20261123-009 How does an aircraft carrier stop a landing jet? (aviation engineering; different structure)"
+  ],
+  "render_review_status": "short cut (35-50 s) of the v4 demo, 2026-11-27"
+ },
+ "scenes": [
+  {
+   "visual": "custom",
+   "transition": "cut",
+   "transition_dur": 0.35,
+   "speed": 1.08,
+   "subject": "case folder: two Comet flights with dates, a red ring around a window corner",
+   "changes": [
+    "UNSOLVED stamp",
+    "second flight on 'three months apart'",
+    "magnified window corner ringed on 'corner'"
+   ],
+   "explain": {
+    "understand": "two jets broke up; the answer will be a window corner",
+    "objects": [
+     "case folder",
+     "two jet silhouettes",
+     "dates",
+     "magnifier on a window corner"
+    ],
+    "change": "evidence appears",
+    "cause": "narration introduces the case",
+    "text": [
+     "10 JAN 1954 off Elba",
+     "8 APR 1954 near Naples",
+     "UNSOLVED"
+    ]
+   },
+   "sfx": [
+    {
+     "at": 0.25,
+     "sound": "stamp"
+    }
+   ],
+   "tts": "In 1954, two Comet jetliners broke apart in flight. The clue was a window corner.",
+   "caption": "In 1954, two Comet jetliners|broke apart in flight.|The clue was a window corner.",
+   "params": {
+    "fn": "c_hook",
+    "two_at": "jetliners",
+    "clue_at": "corner"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_left",
+   "speed": 1.08,
+   "subject": "Exhibit 2: fuselage in a water tank, cycle counter 1,230 → 3,060, crack from a hatch corner",
+   "changes": [
+    "water ripples, fuselage pulses",
+    "counter climbs",
+    "crack grows on 'split'",
+    "FAILED AT A CORNER stamp"
+   ],
+   "explain": {
+    "understand": "repeated pressurizing alone, with no storm or bomb, cracked the fuselage at a corner",
+    "objects": [
+     "water tank",
+     "fuselage",
+     "cycle counter",
+     "crack"
+    ],
+    "change": "count rises until the skin splits",
+    "cause": "metal fatigue from repeated cycles",
+    "text": [
+     "WATER TANK · FARNBOROUGH",
+     "3,060 pressure cycles",
+     "1,230 real flights + 1,830 in the tank",
+     "FAILED AT A CORNER"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "split",
+     "sound": "crack"
+    }
+   ],
+   "tts": "Investigators sank a whole Comet in a water tank and pumped it up and down. At about three thousand cycles, it split... at a window corner.",
+   "caption": "Investigators sank a whole Comet in a water tank|and pumped it up and down.|At about three thousand cycles,|it split...|at a window corner.",
+   "params": {
+    "fn": "c_tank",
+    "split_at": "split"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.06,
+   "subject": "force-flow lines in a stretched skin detour around a cut-out and crowd at its corners",
+   "changes": [
+    "dots flow along lines",
+    "corners glow on 'piles up'"
+   ],
+   "explain": {
+    "understand": "a hole concentrates force at the edge where it turns most sharply",
+    "objects": [
+     "skin panel",
+     "flow lines",
+     "moving dots",
+     "window cut-out"
+    ],
+    "change": "corners light up",
+    "cause": "load has to detour around the opening",
+    "text": [
+     "FORCE IN THE SKIN (illustration)",
+     "force piles up where the edge turns"
+    ]
+   },
+   "tts": "Why corners? Force in the skin flows like traffic. A hole makes it detour and pile up where the edge turns.",
+   "caption": "Why corners?|Force in the skin flows like traffic.|A hole makes it detour|and pile up where the edge turns.",
+   "params": {
+    "fn": "c_flow",
+    "pile_at": "pile up"
+   },
+   "sfx": []
+  },
+  {
+   "visual": "custom",
+   "transition": "cut",
+   "speed": 1.06,
+   "subject": "Inglis curve: peak stress factor vs tip radius; marker climbs from 3x as the hole sharpens",
+   "changes": [
+    "marker starts at 3x (round)",
+    "tip radius shrinks, marker climbs toward 9x on 'tighter'"
+   ],
+   "explain": {
+    "understand": "a round hole triples peak stress; tighter tips raise it fast",
+    "objects": [
+     "chart axes",
+     "curve",
+     "marker",
+     "morphing hole"
+    ],
+    "change": "marker climbs as the tip sharpens",
+    "cause": "peak = 1 + 2*sqrt(a/rho)",
+    "text": [
+     "SIMPLIFIED MODEL · Inglis (1913)",
+     "peak stress ≈ N× the average",
+     "model caveat"
+    ]
+   },
+   "tts": "In a simple model, a round hole triples the stress. Tighter curves push it higher.",
+   "caption": "In a simple model,|a round hole triples the stress.|Tighter curves push it higher.",
+   "params": {
+    "fn": "c_model",
+    "squeeze_at": "Tighter"
+   },
+   "sfx": []
+  },
+  {
+   "visual": "custom",
+   "transition": "push_up",
+   "speed": 1.06,
+   "subject": "the Comet 1 window drawn to scale (16.6 x 14 in) with its 3-inch corner radius highlighted; calc vs tests note",
+   "changes": [
+    "window to scale",
+    "yellow corner arc on 'three inches'",
+    "red note on 'higher'"
+   ],
+   "explain": {
+    "understand": "the myth is 'sharp square windows'; the fact is rounded corners that still ran far over the calculated stress, flexed every flight",
+    "objects": [
+     "window outline to scale",
+     "dimension lines",
+     "corner arc",
+     "notes"
+    ],
+    "change": "corner highlighted, notes appear",
+    "cause": "test findings vs original calculation",
+    "text": [
+     "16.6 in",
+     "14 in",
+     "corner radius 3 in",
+     "calc: under ½ strength",
+     "tests: much higher"
+    ]
+   },
+   "tts": "The twist: the Comet's windows weren't sharp squares. But the stress at their corners ran far higher than calculated.",
+   "caption": "The twist:|the Comet's windows weren't sharp squares.|But the stress at their corners|ran far higher than calculated.",
+   "params": {
+    "fn": "c_twist",
+    "radius_at": "weren't",
+    "higher_at": "far higher"
+   },
+   "sfx": []
+  },
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.02,
+   "subject": "squarish window morphs into an oval; a yellow highlighter traces its edge with no corner",
+   "changes": [
+    "window morphs",
+    "highlighter traces on 'trace'"
+   ],
+   "explain": {
+    "understand": "the repeatable takeaway: no corner, no pile-up",
+    "objects": [
+     "cabin window",
+     "clouds",
+     "highlighter"
+    ],
+    "change": "shape rounds, edge traced",
+    "cause": "payoff",
+    "text": [
+     "Comet 1: squarish",
+     "Today: no corners"
+    ]
+   },
+   "tts": "Later Comets got oval windows. Next flight, trace yours: no corner for force to pile into. Follow for one bonus braincell per scroll.",
+   "caption": "Later Comets got oval windows.|Next flight, trace yours:|no corner for force to pile into.|Follow for one bonus braincell per scroll.",
+   "params": {
+    "fn": "c_trace",
+    "trace_at": "trace"
+   },
+   "sfx": [],
+   "pause_after": 0.4
+  }
+ ],
+ "caption_style": "kinetic",
+ "music": {
+  "mood": "tense",
+  "bpm": 84,
+  "peak_db": -30
+ },
+ "duration_range": [
+  30,
+  55
+ ]
+}
