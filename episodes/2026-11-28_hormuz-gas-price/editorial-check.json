@@ -1,0 +1,13 @@
+{
+ "spec": "spec.json",
+ "title": "Why can one narrow strait move your gas price?",
+ "verdict": "PASS",
+ "fails": [],
+ "warnings": [
+  "narration uses a hypothetical; make sure the screen labels it ILLUSTRATIVE / hypothetical"
+ ],
+ "notes": [
+  "125 narrated words",
+  "possible similar episodes: BB-20261116-001 Who sets an IPO's first price? (shared: price)"
+ ]
+}

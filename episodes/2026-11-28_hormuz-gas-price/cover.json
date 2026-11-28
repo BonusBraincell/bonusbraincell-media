@@ -1,0 +1,3 @@
+{"v4": true, "series": "Follow the Money", "environment": "dusk_map",
+ "art": {"fn": "hz_cover", "t": 0, "params": {"_dur": 6}},
+ "layout": "top", "headline": "One narrow strait.|*Your gas price.*", "size": 120, "scrim": true}

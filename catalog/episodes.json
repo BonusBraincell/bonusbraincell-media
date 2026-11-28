@@ -351,6 +351,27 @@
    "opener_pattern": "concrete_scenario_if_you",
    "ending_pattern": "image_to_remember",
    "environment": "blueprint"
+  },
+  {
+   "id": "BB-20261128-015",
+   "date": "2026-11-28",
+   "title": "Why can one narrow strait move your gas price?",
+   "series": "Follow the Money",
+   "premise_keywords": [
+    "strait of hormuz",
+    "oil chokepoint",
+    "gas price",
+    "global oil market",
+    "bypass pipelines",
+    "crude imports"
+   ],
+   "narrative_structure": "consequence_unfolding",
+   "animation_approach": "COUNTERFACTUAL_MODEL",
+   "secondary_approach": "DATA_STORY",
+   "cover_composition": "map_route",
+   "opener_pattern": "question + contradiction (8% of imports)",
+   "ending_pattern": "image to remember (receipt + traffic jam)",
+   "environment": "dusk_map"
   }
  ]
 }

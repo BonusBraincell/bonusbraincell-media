@@ -1,0 +1,337 @@
+{
+ "workflow": "v4",
+ "title": "Why can one narrow strait move your gas price?",
+ "series": "Follow the Money",
+ "post_id": "BB-20261128-015",
+ "slot_date": "2026-11-28",
+ "slot": "A",
+ "environment": "dusk_map",
+ "scene_module": "scenes.py",
+ "opening": "motion",
+ "speed": 1.05,
+ "caption_style": "kinetic",
+ "music": {
+  "mood": "tense",
+  "bpm": 88,
+  "peak_db": -30
+ },
+ "duration_range": [
+  30,
+  55
+ ],
+ "record": {
+  "question": "Why can one narrow strait move your gas price?",
+  "audience_reason": "Hormuz is in the oil news all year and gas prices touch everyone; the puzzle (the U.S. imports only 8% of its crude from the Gulf) makes the global-market mechanism click.",
+  "editorial_contribution": {
+   "type": "labeled hypothetical",
+   "statement": "We connect a pump price to a strait the viewer will never see: a to-scale bar of 2025 U.S. crude imports (8% from the Gulf), the 2024 flow through Hormuz (~20 million b/d, about a fifth of world use), a labeled what-if in which bypass pipelines (EIA estimate ~2.6 million b/d available) carry only a sliver, and a simplified one-market board where Asian buyers bid for other barrels and every price meter, Texas included, rises together; crude is about half of a gallon's price."
+  },
+  "narrative_structure": "consequence_unfolding",
+  "animation_approach": "COUNTERFACTUAL_MODEL",
+  "secondary_approach": "DATA_STORY",
+  "custom_scene": "A simplified dusk map of the strait with a dashed tanker lane and a yellow tanker to track; a red barrier closes the narrow part, tankers queue, two teal bypass pipelines carry a thin flow over land while a to-scale bar shows ~2.6 of 20 million b/d; then a four-region market board (Asia, Europe, Texas, Africa) where Asia's orange bid arrows reach every other region and linked price meters rise together until Texas lights up; a to-scale gallon bar puts crude at about half; a receipt prints beside the jammed strait.",
+  "cover_composition": {
+   "type": "map_route",
+   "layout": "top",
+   "environment": "dusk_map",
+   "text_amount": "two short lines",
+   "main_object": "tankers squeezing through the simplified strait with a gas pump showing a yellow up arrow"
+  },
+  "sources_and_assumptions": "See sources-and-rights.md. Assumptions: the closure is a labeled hypothetical, not a description of current traffic or a forecast; we avoid any current-year traffic numbers. '8%' is EIA's Middle East Gulf share of 2025 U.S. crude imports; '20 million b/d / about 20%' is EIA's 2024 figure (IEA gives 20 mb/d for 2025); bypass ~2.6 million b/d is EIA's estimate of available unused Saudi+UAE pipeline capacity (IEA gives 3.5-5.5 mb/d of capacity), narrated as 'a few million'; 'about half' = crude's share of the 2025 retail gasoline price (EIA chart ~51%; API citing EIA 'about 51%'). The market board and meters are illustrative (no prices shown). The map is simplified, not to scale.",
+  "asset_provenance": "All visuals drawn in code (Pillow) for this episode: simplified map, generic tankers, pump, barrels, receipt; no logos, no real people. Inter (OFL); narration Kokoro (Apache-2.0); sound effects and music bed synthesized (templates/sfx.py).",
+  "similar_recent_episodes": [
+   "BB-20261116-002 Who takes delivery on oil futures? (futures settlement mechanics; this is physical chokepoint -> global price)",
+   "BB-20261121-007 Why do ships fly Liberia's or Panama's flag? (ship registries; different premise)",
+   "BB-20261125-011 Who actually pays a tariff? (price pass-through via policy; here via supply)"
+  ],
+  "render_review_status": "qa_passed (render 54.07 s, qa-report pass_, fact-check PASS 2 rounds, editorial gate PASS)"
+ },
+ "scenes": [
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.06,
+   "subject": "simplified map of the Strait of Hormuz with tankers moving through the lane; a gas pump whose sign gets a yellow up arrow",
+   "changes": [
+    "0.0s tankers moving through the lane",
+    "narrowest point marked",
+    "pump arrow rises on 'gas price'"
+   ],
+   "explain": {
+    "understand": "the question: a far-away strait seems to affect the price at your pump",
+    "objects": "strait map, tankers, gas pump",
+    "change": "tankers flow; the pump sign shows an up arrow",
+    "cause": "the question connects them",
+    "text": [
+     "STRAIT OF HORMUZ",
+     "the narrow part",
+     "simplified map"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "gas price",
+     "sound": "register"
+    }
+   ],
+   "tts": "Why can one narrow strait move your gas price?",
+   "caption": "Why can one|narrow strait|move your|gas price?",
+   "params": {
+    "fn": "hz_hook",
+    "price_at": "gas price"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_left",
+   "speed": 1.05,
+   "subject": "to-scale bar of 2025 U.S. crude oil imports (6.2 million b/d) with the Middle East Gulf's 8% slice in yellow",
+   "changes": [
+    "bar grows",
+    "92% label",
+    "8% label on 'Gulf region'"
+   ],
+   "explain": {
+    "understand": "the U.S. buys little crude from the Gulf, so the link is not direct supply",
+    "objects": "to-scale stacked bar, small tanker",
+    "change": "the bar fills; the yellow 8% slice is labeled",
+    "cause": "EIA 2025 import data",
+    "text": [
+     "U.S. CRUDE IMPORTS · 2025",
+     "from the Middle East Gulf: 8%",
+     "everywhere else: 92%",
+     "6.2 million barrels a day, to scale",
+     "Source: EIA · Middle East Gulf countries"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "8 percent",
+     "sound": "pop"
+    }
+   ],
+   "tts": "Last year, only 8 percent of America's imported crude came from the Middle East Gulf.",
+   "caption": "Last year,|only 8 percent|of America's|imported crude|came from|the Middle East Gulf.",
+   "params": {
+    "fn": "hz_imports",
+    "gulf_at": "Middle East Gulf"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_left",
+   "speed": 1.05,
+   "subject": "back on the strait map: a counter climbs to 20 million barrels a day (2024); a row of five barrels, one yellow",
+   "changes": [
+    "counter 0 -> 20",
+    "1-in-5 barrels row on 'a fifth'"
+   ],
+   "explain": {
+    "understand": "a big share of the world's oil passes this one place",
+    "objects": "map, more tankers, counter, five barrels",
+    "change": "counter rises; one barrel in five lights up",
+    "cause": "EIA 2024 flow estimate",
+    "text": [
+     "THROUGH THE STRAIT",
+     "20 million",
+     "barrels a day · 2024",
+     "about 1 in 5",
+     "of the world's oil use"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "20 million",
+     "sound": "tick"
+    },
+    {
+     "at": "a fifth",
+     "sound": "pop"
+    }
+   ],
+   "tts": "But in 2024, about 20 million barrels a day sailed through this strait. Roughly a fifth of the world's oil use.",
+   "caption": "But in 2024,|about 20 million|barrels a day|sailed through|this strait.|Roughly a fifth|of the world's|oil use.",
+   "params": {
+    "fn": "hz_flow",
+    "fifth_at": "a fifth"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "cut",
+   "speed": 1.04,
+   "subject": "what-if: a red barrier closes the lane, tankers queue, two bypass pipelines carry small flows, to-scale bar 2.6 of 20 million b/d",
+   "changes": [
+    "barrier closes on 'choked'",
+    "pipelines appear on 'Pipelines'",
+    "bar 2.6 vs 20",
+    "THE REST IS STUCK chip"
+   ],
+   "explain": {
+    "understand": "if the strait is blocked, pipelines can't replace most of the flow",
+    "objects": "map, barrier, queued tankers, pipelines, to-scale bar",
+    "change": "the lane closes; a thin teal flow continues on land; most volume stays behind",
+    "cause": "limited spare pipeline capacity (EIA estimate)",
+    "text": [
+     "WHAT IF IT'S CHOKED? · ILLUSTRATION",
+     "bypass pipelines",
+     "spare pipelines: ~2.6 of 20 million b/d (EIA est.)",
+     "THE REST IS STUCK"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "gets choked",
+     "sound": "thump"
+    },
+    {
+     "at": "is stuck",
+     "sound": "stamp"
+    }
+   ],
+   "tts": "Now imagine it gets choked. Spare pipelines around it could reroute only a few million barrels a day... the rest is stuck.",
+   "caption": "Now imagine|it gets choked.|Spare pipelines|around it|could reroute only|a few million|barrels a day...|the rest|is stuck.",
+   "params": {
+    "fn": "hz_choke",
+    "choke_at": "gets choked",
+    "pipe_at": "Spare pipelines",
+    "stuck_at": "the rest"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.05,
+   "subject": "simplified market board: Asia, Europe, Texas, Africa with barrels and meters; Asia's bid arrows reach the others",
+   "changes": [
+    "84% chip",
+    "orange bid arrows on 'bidding'"
+   ],
+   "explain": {
+    "understand": "buyers who lose Gulf oil compete for oil from other places",
+    "objects": "four region cards, barrels, price meters, bid arrows",
+    "change": "arrows extend from Asia to every other region",
+    "cause": "lost supply has to be replaced from the same pool",
+    "text": [
+     "ONE OIL MARKET · SIMPLIFIED MODEL",
+     "84% of the strait's crude went to Asia (2024)",
+     "Asian buyers bid for other barrels"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "bid for",
+     "sound": "whoosh"
+    }
+   ],
+   "tts": "Most of it was headed to Asia. Those buyers bid for barrels everywhere else.",
+   "caption": "Most of it|was headed|to Asia.|Those buyers|bid for barrels|everywhere else.",
+   "params": {
+    "fn": "hz_bids",
+    "bid_at": "bid for"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "cut",
+   "speed": 1.03,
+   "subject": "same board: a link line joins the meters, every meter rises at once, Texas outlined in yellow",
+   "changes": [
+    "meters rise on 'rise together'",
+    "Texas highlight on 'Texas'"
+   ],
+   "explain": {
+    "understand": "oil prices around the world move together, so U.S. crude rises too",
+    "objects": "region cards, linked price meters",
+    "change": "all meters rise; Texas lights up",
+    "cause": "crude trades in a global market; prices of crude streams tend to move together",
+    "text": [
+     "ONE OIL MARKET · SIMPLIFIED MODEL",
+     "TEXAS",
+     "illustration, not a price forecast"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "rise together",
+     "sound": "riser"
+    },
+    {
+     "at": "Texas",
+     "sound": "chime"
+    }
+   ],
+   "tts": "Crude trades in one global market. So prices rise together. Even in Texas.",
+   "caption": "Crude trades|in one|global market.|So prices|rise together.|Even in Texas.",
+   "params": {
+    "fn": "hz_together",
+    "rise_at": "rise together",
+    "texas_at": "Texas"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_up",
+   "speed": 1.04,
+   "subject": "gas pump beside a to-scale vertical bar: crude oil about half of a gallon's price (2025 average), the rest refining, delivery, taxes",
+   "changes": [
+    "bar fills",
+    "labels"
+   ],
+   "explain": {
+    "understand": "crude is the biggest piece of the pump price, so its rise reaches you",
+    "objects": "pump, to-scale bar",
+    "change": "bar fills; yellow crude half labeled",
+    "cause": "EIA price breakdown",
+    "text": [
+     "WHAT'S IN A GALLON",
+     "crude oil: about half",
+     "refining, delivery, taxes",
+     "Price of a gallon, 2025 avg · Source: EIA"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "about half",
+     "sound": "coins"
+    }
+   ],
+   "tts": "And crude is about half of what you pay for a gallon of gas.",
+   "caption": "And crude|is about half|of what you pay|for a gallon|of gas.",
+   "params": {
+    "fn": "hz_pump"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.0,
+   "subject": "back to the strait: queued tankers behind the barrier, a fuel receipt printing out",
+   "changes": [
+    "receipt slides out",
+    "chip 'a traffic jam you'll never see'"
+   ],
+   "explain": {
+    "understand": "image to remember: the far-away jam shows up on your receipt",
+    "objects": "map, tankers, barrier, receipt",
+    "change": "receipt prints",
+    "cause": "summary of the chain",
+    "text": [
+     "a traffic jam you'll never see"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "receipt",
+     "sound": "paper"
+    }
+   ],
+   "tts": "Your receipt can feel a traffic jam you'll never see. Follow for one bonus braincell per scroll.",
+   "caption": "Your receipt|can feel|a traffic jam|you'll never see.|Follow for one|bonus braincell|per scroll.",
+   "params": {
+    "fn": "hz_payoff"
+   },
+   "pause_after": 0.4
+  }
+ ]
+}
