@@ -330,6 +330,27 @@
    "opener_pattern": "myth_you_have_heard",
    "ending_pattern": "image_to_remember",
    "environment": "daylight"
+  },
+  {
+   "id": "BB-20261127-014",
+   "date": "2026-11-27",
+   "title": "Why does airport security swab your hands?",
+   "series": "How Does That Even Work?",
+   "premise_keywords": [
+    "airport security",
+    "TSA",
+    "hand swab",
+    "explosives trace detection",
+    "ion mobility spectrometry",
+    "drift tube",
+    "chemistry"
+   ],
+   "narrative_structure": "journey",
+   "animation_approach": "FOLLOW_THE_JOURNEY",
+   "cover_composition": "macro_closeup",
+   "opener_pattern": "concrete_scenario_if_you",
+   "ending_pattern": "image_to_remember",
+   "environment": "blueprint"
   }
  ]
 }

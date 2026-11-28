@@ -1,0 +1,27 @@
+{
+ "post_id": "BB-20261127-014",
+ "slot_date": "2026-11-27",
+ "slot": "B",
+ "series": "How Does That Even Work?",
+ "narrator": "am_eric",
+ "caption": "TL;DR: An airport hand swab feeds a detector that vaporizes residue, charges it and times how fast it drifts.\n\nOne-liner: \"That little hand wipe starts a molecule race, and arrival time is the fingerprint.\"\n\nKnowledge pearl: Different molecules can share similar drift times, which is why experts have long looked to mass spectrometry to improve airport trace detection.\n\nFollow @bonusbraincell for one bonus braincell per scroll.\n\n#BBHowItWorks #airportsecurity #TSA #science #explained",
+ "tiktok_caption": "TL;DR: An airport hand swab feeds a detector that vaporizes residue, charges it and times how fast it drifts.\n\nOne-liner: \"That little hand wipe starts a molecule race, and arrival time is the fingerprint.\"\n\nKnowledge pearl: Different molecules can share similar drift times, which is why experts have long looked to mass spectrometry to improve airport trace detection.\n\nFollow @bonusbraincell for one bonus braincell per scroll.\n\n#BBHowItWorks #airportsecurity #TSA #science #explained",
+ "youtube_title": "Why does airport security swab your hands?",
+ "youtube_description": "Why does airport security swab your hands? The swab collects invisible residue, and a trace detector (usually an ion mobility spectrometer) identifies it by timing a molecule race.\nAnyone who handles explosives can leave invisible traces on what they touch. The detector heats the swab so the residue turns to vapor, gives the molecules an electric charge (usually with a small radioactive source), and an electric field pulls them down a tube against a flow of gas. Each kind crosses at its own speed, in milliseconds; arrival time is checked against a library of explosives. Simplified model; peaks shown are illustrative.\n\nKey moments\n0:00 The hand swab\n0:12 Inside the detector: heat and charge\n0:22 The drift-tube race and the library check\n\nSources: NIST IR 7240 (2005); DHS Science and Technology Directorate (2022); National Academies, Opportunities to Improve Airport Passenger Screening with Mass Spectrometry (2004); Arizona State University chemistry notes (IMS); Sandia National Laboratories (IMS); Talanta review of IMS for explosives (Idaho National Laboratory).\nMore in this series: How Does That Even Work? playlist on our channel.\nNarration uses a synthetic (AI) voice. Graphics are original.\n#shorts #airportsecurity #science",
+ "youtube_tags": [
+  "why does tsa swab your hands",
+  "airport hand swab",
+  "tsa swab",
+  "explosives trace detection",
+  "ion mobility spectrometry",
+  "airport security explained",
+  "how airport security works",
+  "How Does That Even Work",
+  "science explained",
+  "thanksgiving travel"
+ ],
+ "pinned_comment": "What else at the airport should we take apart next? 🧠",
+ "is_ai_generated": true,
+ "package_folder": "Ready to Upload/2026-11-27_BB-20261127-014_why-does-airport-security-swab-your-hands",
+ "published": null
+}

@@ -693,6 +693,8 @@ def narrator_for(spec):
         return cfg["fallback"], None
     vs = cfg["voices"]
     i = (_dt.date.fromisoformat(d) - _dt.date.fromisoformat(cfg["start_date"])).days % len(vs)
+    if str(spec.get("slot", "A")).upper() == "B":  # 2 posts/day (2026-11-27): slot B takes the voice 11 places on, so it never repeats slot A's
+        i = (i + int(cfg.get("slot_b_offset", 11))) % len(vs)
     nar = vs[i]
     female = nar[:2] in ("af", "bf")
     quote = next(vs[(i + k) % len(vs)] for k in range(1, len(vs)) if (vs[(i + k) % len(vs)][:2] in ("af", "bf")) != female)

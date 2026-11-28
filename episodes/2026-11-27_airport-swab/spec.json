@@ -1,0 +1,328 @@
+{
+ "workflow": "v4",
+ "title": "Why does airport security swab your hands?",
+ "series": "How Does That Even Work?",
+ "post_id": "BB-20261127-014",
+ "slot_date": "2026-11-27",
+ "slot": "B",
+ "environment": "blueprint",
+ "scene_module": "scenes.py",
+ "opening": "motion",
+ "speed": 1.05,
+ "record": {
+  "question": "Why does airport security swab your hands?",
+  "audience_reason": "Millions fly home this Thanksgiving weekend and many get a hand swab with no explanation; the answer is a hidden chemistry instrument most people never picture, and swab explainers are breaking out on TikTok and Instagram this month.",
+  "editorial_contribution": {
+   "type": "visual model",
+   "statement": "We follow one invisible speck of residue all the way through a simplified ion mobility trace detector, built from NIST and DHS descriptions: swab, heated desorber, ion source, a drift-tube race against a gas headwind, an arrival-time trace in milliseconds, and the library check that decides alarm or no alarm."
+  },
+  "narrative_structure": "journey",
+  "animation_approach": "FOLLOW_THE_JOURNEY",
+  "secondary_approach": "SYSTEM_CUTAWAY",
+  "custom_scene": "On a blueprint world, a generic hand is wiped by a swab on a wand and yellow specks hop onto the pad; a magnifier shows a fingertip with residue that the swab lifts; a cutaway detector takes the swab, its heater coils glow while a desorber gauge fills and the speck rises as vapor; vapor molecules pass a small ion source and come out ringed with charge; in a drift tube a gate opens and three kinds of ions race to a detector plate while gas streaks flow back; an arrival-time trace sweeps 0-15 ms and the yellow peak is flagged as the fingerprint; two mini traces show a library match (red light) and no match (green light).",
+  "cover_composition": {
+   "type": "macro_closeup",
+   "layout": "top",
+   "environment": "blueprint",
+   "text_amount": "two short lines",
+   "main_object": "open hand mid-swab with glowing residue specks and a magnifier on a fingertip"
+  },
+  "sources_and_assumptions": "See sources-and-rights.md. Assumptions: the detector is a generic, simplified ion mobility spectrometer (TSA's deployed contact-sampling ETDs are IMS-based per DHS S&T 2022; newer mass-spectrometry ETDs exist and are not shown); the three peaks and their times are illustrative, labeled on screen; no desorber temperature is stated (only one source, NIST IR 7240, gave a range, so it was cut); 'usually' a radioactive source per NIST (nickel-63) and ASU; we say nothing about who gets swabbed or how often (no sourced claim), and nothing that could help anyone avoid detection.",
+  "asset_provenance": "All visuals drawn in code (Pillow) for this episode: generic flat hand, generic swab and wand, generic detector cutaway, no logos, uniforms, real people or real machine designs; Inter (OFL); narration Kokoro am_eric (Apache-2.0); sound effects and music bed synthesized (templates/sfx.py).",
+  "similar_recent_episodes": [
+   "BB-20261117-003 What happens when you tap your card? (also a journey through a system, but a payment message across companies; this is a physical particle through a chemistry instrument)",
+   "BB-20261127-013 Why is it called Black Friday? (same day, Thanksgiving-weekend hook; that was a name-origin myth on a miniature street)"
+  ],
+  "render_review_status": "qa_passed"
+ },
+ "scenes": [
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.1,
+   "subject": "open hand with a swab already wiping across the palm; yellow specks transfer to the pad",
+   "changes": [
+    "0.0s hand + swab moving",
+    "specks hop onto the pad"
+   ],
+   "explain": {
+    "understand": "the situation: a checkpoint officer swabs your hands",
+    "objects": "hand, swab on a wand",
+    "change": "swab wipes back and forth, specks move to the pad",
+    "cause": "the wipe picks up residue",
+    "text": [
+     "AIRPORT CHECKPOINT",
+     "swab"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "wipe your hands",
+     "sound": "whoosh"
+    }
+   ],
+   "tts": "If you fly home this Sunday, an officer might wipe your hands with a little cloth. Why?",
+   "caption": "If you fly|home this Sunday,|an officer might|wipe your hands|with a little cloth.|Why?",
+   "params": {
+    "fn": "sw_hook"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "zoom_through",
+   "speed": 1.06,
+   "subject": "magnified fingertip with ridges and yellow residue specks; the swab sweeps through and lifts them",
+   "changes": [
+    "specks appear",
+    "label 'invisible traces'",
+    "swab sweep on 'hunting'"
+   ],
+   "explain": {
+    "understand": "residue from handling explosives sticks to skin and things touched, too small to see",
+    "objects": "magnifier, fingertip ridges, specks, swab",
+    "change": "specks appear, then the swab lifts them",
+    "cause": "contact transfers particles",
+    "text": [
+     "MAGNIFIED · ILLUSTRATION",
+     "invisible traces"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "hunting",
+     "sound": "pop"
+    }
+   ],
+   "tts": "Anyone who handles explosives can leave invisible traces on what they touch. That cloth is hunting for them.",
+   "caption": "Anyone who handles|explosives|can leave invisible traces|on what they touch.|That cloth|is hunting for them.",
+   "params": {
+    "fn": "sw_trace",
+    "hunt_at": "hunting"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_left",
+   "speed": 1.05,
+   "subject": "trace-detector cutaway: swab drops into the slot, heater glows, temperature readout climbs, the speck rises as vapor",
+   "changes": [
+    "swab slides in on 'goes into'",
+    "heater glows + desorber bar fills on 'a heater'",
+    "vapor drifts right on 'vapor'"
+   ],
+   "explain": {
+    "understand": "the detector heats the swab so residue becomes a gas",
+    "objects": "machine cutaway, slot, heater coils, desorber readout, speck",
+    "change": "coils glow, desorber bar fills, speck becomes vapor puffs",
+    "cause": "heat in the desorber",
+    "text": [
+     "TRACE DETECTOR · SIMPLIFIED",
+     "HEATER",
+     "DESORBER",
+     "heating",
+     "vapor"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "goes into",
+     "sound": "thump"
+    },
+    {
+     "at": "a heater",
+     "sound": "riser"
+    }
+   ],
+   "tts": "Follow one speck. The cloth goes into a heater, and the speck turns to vapor.",
+   "caption": "Follow one speck.|The cloth goes|into a heater,|and the speck|turns to vapor.",
+   "params": {
+    "fn": "sw_heat",
+    "slide_at": "goes into",
+    "heat_at": "a heater",
+    "vapor_at": "turns to vapor"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_left",
+   "speed": 1.05,
+   "subject": "vapor molecules stream past a small ion source and come out ringed (charged)",
+   "changes": [
+    "molecules flow right",
+    "rings appear past the source on 'charge'"
+   ],
+   "explain": {
+    "understand": "the vapor molecules get an electric charge so a field can move them",
+    "objects": "ion source with trefoil, molecules",
+    "change": "molecules gain charge rings after the source",
+    "cause": "ionizing source (usually nickel-63)",
+    "text": [
+     "STEP 2 · GIVE IT A CHARGE",
+     "ion source (usually nickel-63)",
+     "charged"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "electric charge",
+     "sound": "pop"
+    }
+   ],
+   "tts": "Usually, a small radioactive source gives the molecules an electric charge.",
+   "caption": "Usually,|a small radioactive source|gives the molecules|an electric charge.",
+   "params": {
+    "fn": "sw_charge",
+    "charge_at": "electric charge"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_left",
+   "speed": 1.05,
+   "subject": "drift tube cutaway: gate opens, three ion kinds race to the detector with gas streaks flowing back",
+   "changes": [
+    "gate opens on 'race'",
+    "ions spread out",
+    "gas arrow on 'headwind'"
+   ],
+   "explain": {
+    "understand": "ions are pulled through a tube against a gas flow; different kinds arrive at different times",
+    "objects": "drift tube, gate, ring electrodes, three ions, detector",
+    "change": "ions separate as they move",
+    "cause": "electric field vs gas collisions",
+    "text": [
+     "STEP 3 · THE DRIFT TUBE",
+     "electric field pulls →",
+     "← gas pushes back",
+     "detector"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "A race",
+     "sound": "swoosh_up"
+    }
+   ],
+   "tts": "A race. An electric field pulls the molecules down a tube, against a headwind of gas. Each kind crosses at its own speed.",
+   "caption": "A race.|An electric field|pulls the molecules|down a tube,|against a headwind|of gas.|Each kind crosses|at its own speed.",
+   "params": {
+    "fn": "sw_race",
+    "race_at": "A race",
+    "wind_at": "headwind"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.04,
+   "subject": "arrival-time trace 0-15 ms: cursor sweeps, three peaks appear; the yellow peak is flagged",
+   "changes": [
+    "cursor sweep",
+    "peaks appear",
+    "fingerprint chip on 'Arrival time'"
+   ],
+   "explain": {
+    "understand": "the time an ion takes to arrive identifies what it is",
+    "objects": "trace axes 0-15 ms, peaks, cursor",
+    "change": "peaks appear in arrival order",
+    "cause": "each kind of ion has its own drift time",
+    "text": [
+     "ILLUSTRATIVE PEAKS",
+     "0 ms",
+     "15 ms",
+     "drift time · commonly under 15 ms",
+     "arrival time = fingerprint"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "milliseconds",
+     "sound": "tick"
+    }
+   ],
+   "tts": "The race lasts milliseconds. Arrival time is the fingerprint.",
+   "caption": "The race lasts|milliseconds.|Arrival time|is the fingerprint.",
+   "params": {
+    "fn": "sw_clock",
+    "finger_at": "Arrival time"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "push_up",
+   "speed": 1.06,
+   "subject": "two mini traces: left peak on a library line, red light; right peak off the lines, green light",
+   "changes": [
+    "left light on 'It alarms'",
+    "right panel + green light on 'No alarm'"
+   ],
+   "explain": {
+    "understand": "a peak at a known explosive's drift time triggers an alarm; otherwise no alarm",
+    "objects": "library reference lines, two traces, two lights",
+    "change": "lights switch on in turn",
+    "cause": "match vs no match with the library",
+    "text": [
+     "STEP 4 · LIBRARY CHECK (SIMPLIFIED)",
+     "library of explosives",
+     "MATCH",
+     "alarm",
+     "NO MATCH",
+     "no alarm"
+    ]
+   },
+   "sfx": [
+    {
+     "at": "It alarms",
+     "sound": "beep"
+    },
+    {
+     "at": "No alarm",
+     "sound": "chime"
+    }
+   ],
+   "tts": "Then it checks a library of explosives. A strong match? It alarms. No match? No alarm.",
+   "caption": "Then it checks|a library|of explosives.|A strong match?|It alarms.|No match?|No alarm.",
+   "params": {
+    "fn": "sw_library",
+    "alarm_at": "It alarms",
+    "nomatch_at": "No alarm"
+   }
+  },
+  {
+   "visual": "custom",
+   "transition": "dissolve",
+   "speed": 1.0,
+   "subject": "hand and swab beside a small drift tube with the yellow ion looping; chip 'a race timed in milliseconds'",
+   "changes": [
+    "chip appears",
+    "slow push in"
+   ],
+   "explain": {
+    "understand": "the takeaway image: the wipe feeds a timed molecule race",
+    "objects": "hand, swab, small drift tube, ion",
+    "change": "camera pushes in",
+    "cause": "payoff",
+    "text": [
+     "a race timed in milliseconds"
+    ]
+   },
+   "sfx": [],
+   "tts": "That little wipe starts a race timed in milliseconds. Follow for one bonus braincell per scroll.",
+   "caption": "That little wipe|starts a race|timed in milliseconds.|Follow for one|bonus braincell|per scroll.",
+   "params": {
+    "fn": "sw_payoff"
+   },
+   "pause_after": 0.4
+  }
+ ],
+ "caption_style": "kinetic",
+ "music": {
+  "mood": "curious",
+  "bpm": 92,
+  "peak_db": -30
+ },
+ "duration_range": [
+  30,
+  55
+ ]
+}

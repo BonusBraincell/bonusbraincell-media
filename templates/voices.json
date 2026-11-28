@@ -4,5 +4,7 @@
   "voices": ["af_heart", "am_fenrir", "bf_emma", "am_michael", "af_bella", "bm_george", "af_river",
              "am_puck", "af_aoede", "bm_fable", "af_kore", "am_onyx", "af_sarah", "bm_lewis",
              "af_alloy", "am_eric", "bf_isabella", "am_liam", "af_nova", "bm_daniel", "af_sky"],
+  "slot_b_offset": 11,
+  "_slot_b": "Two posts a day (2026-11-27): a spec with \"slot\": \"B\" uses index + slot_b_offset, so slot A and slot B of the same day never share a narrator (the same voice comes back as a slot A narrator 11 days later).",
   "fallback": "af_heart"
 }

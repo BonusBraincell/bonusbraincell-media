@@ -1,0 +1,13 @@
+{
+ "spec": "spec.json",
+ "title": "Why does airport security swab your hands?",
+ "verdict": "PASS",
+ "fails": [],
+ "warnings": [
+  "animation_approach 'FOLLOW_THE_JOURNEY' repeats one of the last two episodes; keep it only if it clearly serves this story",
+  "narrative_structure 'journey' repeats one of the last two episodes; keep it only if it clearly serves this story"
+ ],
+ "notes": [
+  "125 narrated words"
+ ]
+}
