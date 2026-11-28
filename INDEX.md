@@ -11,6 +11,7 @@ One row per episode, grouped by series. The daily task appends each new episode 
 | 2026-11-19 | What's an IPO lock-up? | https://www.instagram.com/reel/Df7Me2LREyq/ | https://www.tiktok.com/@bonusbraincell/video/7709874865402023181 | https://www.youtube.com/watch?v=SyVgEBXMRfg |
 | 2026-11-25 | Who actually pays a tariff? | https://www.instagram.com/reel/DgKraKfMIDn/ | https://www.tiktok.com/@bonusbraincell/video/7712106144705121549 | https://www.youtube.com/watch?v=4FAok8BeDMI |
 | 2026-11-27 | Why is it called Black Friday? | https://www.instagram.com/reel/DgQFBImTiCt/ | https://www.tiktok.com/@bonusbraincell/video/7712884260146859277 | https://www.youtube.com/watch?v=B40lAO8FDEQ |
+| 2026-11-28 | Why can one narrow strait move your gas price? | https://www.instagram.com/reel/DgSpcNZzmOv/ | https://www.tiktok.com/@bonusbraincell/video/7713254487783116046 | https://www.youtube.com/watch?v=3uhP0b8E5co |
 
 ## How Does That Even Work? · YouTube playlist: https://www.youtube.com/playlist?list=PLU-eG_SEs3ZY
 | Date | Episode | Instagram | TikTok | YouTube |
