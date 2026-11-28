@@ -19,6 +19,7 @@ One row per episode, grouped by series. The daily task appends each new episode 
 | 2026-11-22 | How does a plane fly upside down? | https://www.instagram.com/reel/DgDYVCBCAy9/ | https://www.tiktok.com/@bonusbraincell/video/7711054276772121870 | https://www.youtube.com/watch?v=RkJhwzGqLeU |
 | 2026-11-23 | How does an aircraft carrier stop a landing jet? | https://www.instagram.com/reel/DgFh-HXROpn/ | https://www.tiktok.com/@bonusbraincell/video/7711364285510765837 | https://www.youtube.com/watch?v=hva04dEZ5cM |
 | 2026-11-24 | Why do U.S. rockets launch east from Florida? | https://www.instagram.com/reel/DgIVkDVTRWT/ | https://www.tiktok.com/@bonusbraincell/video/7711768588687772942 | https://www.youtube.com/watch?v=22EC_6jSKxM |
+| 2026-11-27 | Why does airport security swab your hands? | https://www.instagram.com/reel/DgRNawvgNJn/ | https://www.tiktok.com/@bonusbraincell/video/7713047513154063629 | https://www.youtube.com/watch?v=W0qtvvUXmF0 |
 
 ## The Fine Print · YouTube playlist: https://www.youtube.com/playlist?list=PLMZBO_ORWou4
 | Date | Episode | Instagram | TikTok | YouTube |
